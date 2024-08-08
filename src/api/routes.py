@@ -95,7 +95,6 @@ def register():
     return jsonify(access_token=access_token), 200
 
 @api.route('/pizzas', methods = ['GET'])
-@jwt_required()
 def get_pizzas(): 
     pizzas = Pizza.query.all()
     pizzas_serialized = list(map(lambda item:item.serialize(), pizzas))
@@ -112,22 +111,23 @@ def get_pizzas():
 def add_pizza():
     request_body = request.get_json()
 
-    if Pizza.query.filter_by(id=request_body["id"]).first():
-        return jsonify({"msg": "Duplicated image"}), 409
+    if Pizza.query.filter_by(name=request_body["name"]).first():
+        return jsonify({"msg": "Duplicated pizza"}), 409
     jtw_data = get_jwt()
-    user_id = jtw_data["user_id"]
-    pizza = Pizza()
-    pizza.new_pizza(   
-        name= request_body["name"],
-        url=request_body["url"],
-        price = request_body["price"],
-        user_id = user_id
-    )
+    user_role = jtw_data["user_role"]
+    if user_role == "Admin":
+        pizza = Pizza()
+        pizza.new_pizza(   
+            name = request_body["name"],
+            url = request_body["url"],
+            price = request_body["price"],
+            description = request_body["description"]
+        )
 
-    db.session.add(pizza)
-    db.session.commit()
-
-    return jsonify({"msg": "Pizza created", "pizza": pizza.serialize()}),201
+        db.session.add(pizza)
+        db.session.commit()
+        return jsonify({"msg": "Pizza created", "pizza": pizza.serialize()}),201
+    return jsonify({"msg": user_role}),400
 
 @api.route('/pizzas/<int:pizza_id>', methods = ['GET'])
 @jwt_required()
