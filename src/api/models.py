@@ -74,17 +74,19 @@ class Order(db.Model):
 
 class Pizza(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), primary_key=True, nullable=False)
-    description = db.Column(db.String(200), primary_key=True, nullable=False)
+    name = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.String(200), nullable=False)
+    price =db.Column(db.Integer, nullable=False)
     url = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):
         return '<Pizza %r>' % self.id
         
-    def new_pizza(self, name, description, url):
+    def new_pizza(self, name, description, url, price):
         self.name = name
         self.description = description
         self.url = url
+        self.price = price
         db.session.add(self)
         db.session.commit()
         

@@ -2,16 +2,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			message: null,
-			demo: [
+			pizzas: [
 				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
+					name: "FIRST",
+					description: "white",
+					price: "white",
+					url: ""
 				}
 			]
 		},
@@ -20,13 +16,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
 			},
-
 			getMessage: async () => {
 				try{
 					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
+					console.log("ASDFADF")
+				}catch(error){
+					console.log("Error loading message from backend", error)
+				}
+			},
+			getPizzas: async () => {
+				try{
+					// fetching data from the backend
+					const resp = await fetch("https://upgraded-guide-9r4pgx45v5p3x4pr-3001.app.github.dev/api/pizzas")
 					const data = await resp.json()
-					setStore({ message: data.message })
+					setStore({ pizzas: data.data })
 					// don't forget to return something, that is how the async resolves
 					return data;
 				}catch(error){
