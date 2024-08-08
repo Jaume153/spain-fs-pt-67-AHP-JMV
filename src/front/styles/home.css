@@ -5,3 +5,18 @@
     one more css for each page that will contain the selected used 
     on that page only (the ones not reused in other pages).
 */
+.logo {
+    width: 300px;
+    
+}
+
+.navbar {
+    background: rgb(158,139,101);
+background: linear-gradient(180deg, rgba(158,139,101,1) 66%, rgba(198,183,153,1) 100%);
+height: 150px;
+padding-bottom: 50px;
+}
+
+body {
+    background-color: rgb(198, 183, 153);
+}
