@@ -11,7 +11,7 @@ export const Navbar = () => {
 					<img className="logo" src='https://res.cloudinary.com/didd1mjsp/image/upload/v1723140966/Untitled-2_n4lggj.png'/>
 				</Link>
 				<div className="ml-auto">
-					<Link to="/demo">
+					<Link to="/">
 						<button className="btn btn-primary">Login</button>
 					</Link>
 				</div>

@@ -5,6 +5,10 @@ class MyRoles(enum.Enum):
     customer = "Customer"
     admin = "Admin"
 
+class PizzaTypes(enum.Enum):
+    deluxe = "Deluxe"
+    classic = "Classic"
+
 class StatusOrders(enum.Enum):
     pending = "Pending"
     completed = "Completed"
@@ -78,15 +82,17 @@ class Pizza(db.Model):
     description = db.Column(db.String(200), nullable=False)
     price =db.Column(db.Integer, nullable=False)
     url = db.Column(db.String(200), nullable=False)
+    pizza_type = db.Column(db.Enum(PizzaTypes), nullable=False, default = PizzaTypes.classic)
 
     def __repr__(self):
         return '<Pizza %r>' % self.id
         
-    def new_pizza(self, name, description, url, price):
+    def new_pizza(self, name, description, url, price, pizza_type):
         self.name = name
         self.description = description
         self.url = url
         self.price = price
+        self.pizza_type = pizza_type
         db.session.add(self)
         db.session.commit()
         
