@@ -50,24 +50,29 @@ def delete_user(user_id):
     else:
         return jsonify({"msg": "User doesn't exist"}), 401
     
+
 @api.route('/login', methods=['POST'])
 def login():
+
     email = request.json.get('email', None)
     password = request.json.get('password', None)
     users_query = User.query.filter_by(email=email).first()
+
     if not users_query:
         return jsonify({"msg": "Doesn't exist"}), 402
+    
     if password != users_query.password:
         return jsonify({"msg": "Bad username or password"}), 401
-    print(users_query.role.value)
 
     additional_claims = {
         "user_id" : users_query.id,
         "user_username" : users_query.username,
         "user_role" : users_query.role.value
     }
+    
     access_token = create_access_token(identity=users_query.id, additional_claims=additional_claims)
     return jsonify(access_token=access_token), 200
+
 
 @api.route('/register', methods=['POST'])
 def register():
@@ -81,8 +86,8 @@ def register():
         email=request_body["email"],    
         password=request_body["password"],
         username=request_body["username"],
-        name = request_body["name"],
-        firstname = request_body["firstname"],
+        # name = request_body["name"],
+        # firstname = request_body["firstname"],
         role = request_body["role"]
     )
     additional_claims = {
@@ -121,7 +126,8 @@ def add_pizza():
             name = request_body["name"],
             url = request_body["url"],
             price = request_body["price"],
-            description = request_body["description"]
+            description = request_body["description"],
+            pizza_type = request_body["pizza_type"]
         )
 
         db.session.add(pizza)
