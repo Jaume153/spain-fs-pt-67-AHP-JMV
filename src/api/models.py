@@ -75,6 +75,7 @@ class Order(db.Model):
             "payment_method": self.payment_method,
             "user_id":self.user_id,
         }
+    
 
 class Pizza(db.Model):
     id = db.Column(db.Integer, primary_key=True)

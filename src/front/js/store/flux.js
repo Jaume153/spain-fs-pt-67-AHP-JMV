@@ -1,3 +1,5 @@
+import { ResetPassword } from "../component/requestResetPassword";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -19,7 +21,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getMessage: async () => {
 				try{
 					// fetching data from the backend
-					console.log("ASDFADF")
 				}catch(error){
 					console.log("Error loading message from backend", error)
 				}
@@ -58,7 +59,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 
 				} catch(error) {
-					return false
+					return error
 				}
 			},
 
@@ -80,8 +81,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const data = await response.json()
 					if (!data.msg){
 						localStorage.setItem("token", data.access_token)
+						return true
+					} else {
+						return data.msg
 					}
-					return true
 
 				} catch(error) {
 					return false
@@ -91,7 +94,31 @@ const getState = ({ getStore, getActions, setStore }) => {
 			logOut: async() => {
 				localStorage.removeItem("token");
 			},
+			resetPassword: async(email)=> {
+				console.log("segundo")
+				try{
+					let response = await fetch (`${process.env.BACKEND_URL}api/requestResetPassword`, {
+						method: "POST",
+						headers: {
+							"Content-Type" : "application/json"
+						},
+						body: JSON.stringify({
+							"email" : email
+						})
+					})
+					console.log("tercero")
+					const data = await response.json()
+					if (data){
+						alert(data)
+						return data
+					}
+					alert(data)
 
+				} catch(error) {
+					console.log("cuarto")
+					return false
+				}
+			},
 			changeColor: (index, color) => {
 				//get the store
 				const store = getStore();

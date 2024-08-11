@@ -6,8 +6,14 @@ from api.models import db, User, Pizza, Order, OrderItems, Ingredient, PizzaIngr
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 from flask_cors import CORS
+from flask_bcrypt import Bcrypt
+
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 api = Blueprint('api', __name__)
+# bcrypt = Bcrypt(api)
 
 # Allow CORS requests to this API
 CORS(api)
@@ -53,25 +59,29 @@ def delete_user(user_id):
 
 @api.route('/login', methods=['POST'])
 def login():
-
-    email = request.json.get('email', None)
     password = request.json.get('password', None)
+    email = request.json.get('email', None)
     users_query = User.query.filter_by(email=email).first()
+    # is_valid = bcrypt.check_password_hash(users_query.password, password)
+    if users_query:
+        is_valid = (password == users_query.password)
 
     if not users_query:
         return jsonify({"msg": "Doesn't exist"}), 402
     
-    if password != users_query.password:
+    if is_valid is False:
         return jsonify({"msg": "Bad username or password"}), 401
 
-    additional_claims = {
-        "user_id" : users_query.id,
-        "user_username" : users_query.username,
-        "user_role" : users_query.role.value
-    }
-    
-    access_token = create_access_token(identity=users_query.id, additional_claims=additional_claims)
-    return jsonify(access_token=access_token), 200
+    if is_valid is True:
+        additional_claims = {
+            "user_id" : users_query.id,
+            "user_username" : users_query.username,
+            "user_role" : users_query.role.value
+        }
+        
+        access_token = create_access_token(identity=users_query.id, additional_claims=additional_claims)
+        return jsonify(access_token=access_token), 200
+    return jsonify({"msg": "Bad username or password"}), 401
 
 
 @api.route('/register', methods=['POST'])
@@ -81,13 +91,12 @@ def register():
     if User.query.filter_by(email=request_body["email"]).first():
         return jsonify({"msg": "Email already exists"}), 409
    
+    # encriptedPassword = bcrypt.generate_password_hash(request_body["password"]).decode('utf-8')
     user = User()
     user.new_user(
-        email=request_body["email"],    
-        password=request_body["password"],
-        username=request_body["username"],
-        # name = request_body["name"],
-        # firstname = request_body["firstname"],
+        email = request_body["email"],    
+        password = request_body["password"],
+        username = request_body["username"],
         role = request_body["role"]
     )
     additional_claims = {
@@ -98,6 +107,50 @@ def register():
 
     access_token = create_access_token(identity=request_body["email"], additional_claims=additional_claims)
     return jsonify(access_token=access_token), 200
+
+@api.route('/requestResetPassword', methods=['POST'])
+def requestResetPassword():
+    request_body = request.get_json()
+    email = request_body["email"]
+
+    if User.query.filter_by(email=request_body["email"]).first():
+        token  = create_access_token(identity=request_body["email"])
+        sender_email = "liina.hp96@gmail.com"
+        receiver_email = email
+        subject = "Recuperar contraseña"
+        html = """\
+        <html>
+        <body>
+            <p>Hi,<br>
+            Haz click aqui para recuperar tu contraseña
+            <a href="https://upgraded-guide-9r4pgx45v5p3x4pr-3000.app.github.dev/resetPassword/""" + token +"""`" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Recuperarla!</a>
+                </td>
+            </tr>
+        </table>
+        </body>
+        </html>
+        """
+
+        # Create a multipart message and set headers
+        message = MIMEMultipart()
+        message["From"] = "liina.hp96@gmail.com"
+        message["To"] = "alinka_96@hotmail.com"
+        message["Subject"] = subject
+
+        # Attach the HTML part
+        message.attach(MIMEText(html, "html"))
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login('liina.hp96@gmail.com', 'vbgy jjul uxwg mkeh')
+            server.sendmail(
+                sender_email,receiver_email, message.as_string()
+            )
+        return jsonify("Sent"), 200
+    else:
+        return jsonify("NotSent"), 400
+
+@api.route('/resetPassword', methods=['POST'])
+def resetPassword():
+    request_body = request.get_json()
 
 @api.route('/pizzas', methods = ['GET'])
 def get_pizzas(): 
