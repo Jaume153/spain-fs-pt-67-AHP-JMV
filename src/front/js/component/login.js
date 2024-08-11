@@ -31,8 +31,19 @@ export const LoginForm  = () => {
                     <input type="password" className="form-control" id="exampleInputPassword1" onChange={(e)=> {setPassword(e.target.value)}}/>
                 </div>
                 <button type="submit" className="btn btn-beige">Submit</button>
-                <div className="newCustomer">
-                    Are you new here?
+                <div>
+                    <div className="newCustomer">
+                        Are you new here?
+                    </div>
+                    <button className="btn btn-primary">
+                        Register here
+                    </button>
+                </div>
+                <div>
+                    <div className="newCustomer">
+                        Forgot your password? 
+                    </div>
+                    <button className="btn btn-danger" onClick={()=>{navigate("/requestResetPassword")}}>Click here!</button>
                 </div>
             </div>
         </form>
