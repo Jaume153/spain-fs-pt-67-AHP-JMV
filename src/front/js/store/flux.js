@@ -9,7 +9,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 					price: "",
 					url: ""
 				}
-			]
+			],
+
+			cart: []
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -36,6 +38,31 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error loading message from backend", error)
 				}
 			},
+
+			addToCart: async (pizza) => {
+				try {
+					const resp = await fetch(`${process.env.BACKEND_URL}api/orderitems`, {
+						method: "POST",
+						headers: {
+							"Content-Type" : "application/json"
+						},
+						body: JSON.stringify({
+							"email" : email,
+							"password" : password
+						})
+					})					
+					const data = await resp.json()
+					setStore({ pizzas: data.data })
+					
+					return data;
+					
+				}catch(error){
+
+				}
+                const store = getStore();
+                setStore({ cart: [...store.cart, pizza] });
+            },
+			
 			login: async(email, password) => {
 				try{
 					let response = await fetch (`${process.env.BACKEND_URL}api/login`, {

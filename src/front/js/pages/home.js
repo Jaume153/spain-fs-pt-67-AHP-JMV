@@ -10,12 +10,17 @@ export const Home = () => {
 
 	useEffect(() => {
 		actions.getPizzas();
-	}, [actions]);
+	}, []);
 
 	
 	const handleSearch = () => {
 		navigate(`/search/${searchTerm}`);
 	};
+
+	const handleAddToCart = (pizza) => {        
+        actions.addToCart(pizza);
+        navigate("/cart");
+    };
 
 	const pizzasPerSlide = 4;
 	const groupedPizzas = [];
@@ -58,6 +63,7 @@ export const Home = () => {
 											/>
 											<h5>{pizza.name}</h5>
 											<p>{pizza.description}</p>
+											<button className="btn btn-success mt-2" onClick={() => handleAddToCart(pizza)}>Add to cart</button>
 										</div>
 									))}
 								</div>
@@ -93,6 +99,7 @@ export const Home = () => {
 											/>
 											<h5>{pizza.name}</h5>
 											<p>{pizza.description}</p>
+											<button className="btn btn-success mt-2" onClick={() => handleAddToCart(pizza)}>Anadir al Carrito</button>
 										</div>
 									))}
 								</div>
