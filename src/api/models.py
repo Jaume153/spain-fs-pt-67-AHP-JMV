@@ -23,22 +23,20 @@ db = SQLAlchemy()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    name = db.Column(db.String(120), nullable=False)
     firstname = db.Column(db.String(120), nullable=False)
+    lastname = db.Column(db.String(80), unique=False, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
     role = db.Column(db.Enum(MyRoles), nullable=False, default = MyRoles.customer)
 
     def __repr__(self):
         return '<Users %r>' % self.id
     
-    def new_user(self, username, password, email, name, firstname, role):
-        self.username = username
-        self.password = password
-        self.email = email
-        self.name = name
+    def new_user(self, firstname, lastname, email, password, role):
         self.firstname = firstname
+        self.lastname = lastname
+        self.email = email
+        self.password = password
         self.role = role
         db.session.add(self)
         db.session.commit()
@@ -46,10 +44,9 @@ class User(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.email,
-            "username": self.username,
-            "name":self.name,
-            "firstname": self.firstname
+            "firstname": self.firstname,
+            "lastname": self.lastname,
+            "email": self.email
         }
 
 class Order(db.Model):
