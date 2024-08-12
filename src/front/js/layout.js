@@ -6,7 +6,7 @@ import { BackendURL } from "./component/backendURL";
 import { LoginForm } from "./component/login";
 import { RequestResetPassword } from "./component/requestResetPassword";
 import { Home } from "./pages/home";
-import { Demo } from "./pages/demo";
+import { SearchResults } from "./pages/searchResults";
 import { Single } from "./pages/single";
 import injectContext from "./store/appContext";
 
@@ -30,9 +30,10 @@ const Layout = () => {
                         <Route element={<LoginForm />} path="/" />
                         <Route element={<RequestResetPassword />} path="/requestResetPassword" />
                         {/* <Route element={<ResetPassword />} path="/resetPassword/:token" /> */}
-                        <Route element={<Home />} path="/home" />
-                        <Route element={<Demo />} path="/demo" />
+                        <Route element={<Home />} path="/home" />                      
+                        {/* <Route element={<Demo />} path="/demo" /> */}
                         <Route element={<Single />} path="/single/:theid" />
+                        <Route element={<SearchResults />} path="/search/:searchTerm" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
