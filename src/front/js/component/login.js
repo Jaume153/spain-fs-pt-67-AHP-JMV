@@ -35,7 +35,7 @@ export const LoginForm  = () => {
                     <div className="newCustomer">
                         Are you new here?
                     </div>
-                    <button className="btn btn-primary">
+                    <button className="btn btn-primary" onClick={()=>{navigate("/register")}}>
                         Register here
                     </button>
                 </div>

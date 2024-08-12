@@ -62,7 +62,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			signIn: async(email, password, username) => {
+			register: async(firstName, lastname, email, password) => {
 				try{
 					let response = await fetch (`${process.env.BACKEND_URL}api/register`, {
 						method: "POST",
@@ -70,10 +70,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 							"Content-Type" : "application/json"
 						},
 						body: JSON.stringify({
+							"firstname" : firstName,
+							"lastname" : lastname,
 							"email" : email,
 							"password" : password,
-							"role": "Customer",
-							"username" : username
+							"role": "customer"
 						})
 					})
 
@@ -94,7 +95,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				localStorage.removeItem("token");
 			},
 			resetPassword: async(email)=> {
-				console.log("segundo")
 				try{
 					let response = await fetch (`${process.env.BACKEND_URL}api/requestResetPassword`, {
 						method: "POST",
@@ -105,7 +105,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 							"email" : email
 						})
 					})
-					console.log("tercero")
 					const data = await response.json()
 					if (data){
 						alert(data)
@@ -114,11 +113,44 @@ const getState = ({ getStore, getActions, setStore }) => {
 					alert(data)
 
 				} catch(error) {
-					console.log("cuarto")
 					return false
 				}
 			},
+			upload_pizza: async(pizzaName, description, price, photo, pizzaType) => {
+				try{
+					let response = await fetch (`${process.env.BACKEND_URL}api/pizzas`, {
+						method: "POST",
+						headers: {
+							"Content-Type" : "application/json"
+						},
+						body: JSON.stringify({
+							"name" : pizzaName,
+							"url" : photo,
+							"price" : price,
+							"description" : description,
+							"pizza_type" : pizzaType
+						})
+					})
+					const data = await response.json()
+				} catch {
 
+				}
+			},
+			upload_pizza_photo: async(file) => {
+				try{
+					let response = await fetch (`${process.env.BACKEND_URL}api/pizzas`, {
+						method: "POST",
+						headers: {
+							"Content-Type" : "application/json"
+						},
+						body: JSON.stringify({
+							"file" : file
+						})
+					})
+				} catch {
+
+				}
+			},
 			changeColor: (index, color) => {
 				//get the store
 				const store = getStore();

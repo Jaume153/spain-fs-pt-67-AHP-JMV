@@ -7,6 +7,8 @@ from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
+import cloudinary
+from cloudinary.uploader import upload
 
 import smtplib
 from email.mime.text import MIMEText
@@ -17,7 +19,24 @@ api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
+cloudinary.config(
+    cloud_name = "didd1mjsp",
+    api_key= "939219197872851",
+    api_secret = "tIZi6_K2YdSLcvDLNAkLY_XcipU"
+)
  
+@api.route('/uploadPizzaPhoto', methods = ['POST'])
+def new_pizza_photo(): 
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error" : "No selected file"}), 404
+    
+    try:
+        result = upload	(file)
+        return jsonify({"url" : result['url']})
+    except Exception as e:
+        return jsonify({"error" : str(e)})
+    
 @api.route('/users', methods = ['GET'])
 def get_users(): 
     users = User.query.all()
@@ -70,24 +89,23 @@ def login():
         return jsonify({"msg": "Doesn't exist"}), 402
     
     if is_valid is False:
-        return jsonify({"msg": "Bad username or password"}), 401
+        return jsonify({"msg": "Bad email or password"}), 401
 
     if is_valid is True:
         additional_claims = {
             "user_id" : users_query.id,
-            "user_username" : users_query.username,
+            "user_lastname" : users_query.lastname,
             "user_role" : users_query.role.value
         }
         
         access_token = create_access_token(identity=users_query.id, additional_claims=additional_claims)
         return jsonify(access_token=access_token), 200
-    return jsonify({"msg": "Bad username or password"}), 401
+    return jsonify({"msg": "Bad email or password"}), 401
 
 
 @api.route('/register', methods=['POST'])
 def register():
     request_body = request.get_json()
-
     if User.query.filter_by(email=request_body["email"]).first():
         return jsonify({"msg": "Email already exists"}), 409
    
@@ -96,12 +114,13 @@ def register():
     user.new_user(
         email = request_body["email"],    
         password = request_body["password"],
-        username = request_body["username"],
+        lastname = request_body["lastname"],
+        firstname = request_body["firstname"],
         role = request_body["role"]
     )
     additional_claims = {
         "user_id" : user.id,
-        "user_username" : user.username,
+        "user_lastname" : user.lastname,
         "role" : user.role.value
     }
 
@@ -148,7 +167,7 @@ def requestResetPassword():
     else:
         return jsonify("NotSent"), 400
 
-@api.route('/resetPassword', methods=['POST'])
+@api.route('/resetPassword/:token', methods=['POST'])
 def resetPassword():
     request_body = request.get_json()
 
