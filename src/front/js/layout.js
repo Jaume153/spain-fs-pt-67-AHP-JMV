@@ -4,8 +4,11 @@ import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 
 import { LoginForm } from "./component/login";
+import { Register } from "./component/register";
 import { RequestResetPassword } from "./component/requestResetPassword";
+import { ResetPassword } from "./component/resetPassword";
 import { Home } from "./pages/home";
+import { NewPizza } from "./component/newPizza";
 import { SearchResults } from "./pages/searchResults";
 import { Cart } from "./pages/cart";
 import injectContext from "./store/appContext";
@@ -30,9 +33,15 @@ const Layout = () => {
                         <Route element={<LoginForm />} path="/" />
                         <Route element={<RequestResetPassword />} path="/requestResetPassword" />
                         {/* <Route element={<ResetPassword />} path="/resetPassword/:token" /> */}
-                        <Route element={<Home />} path="/home" />        
+                            
                         
                         <Route element={<Cart />} path="/cart" />
+                        <Route element={<Register />} path="/register" />
+                        <Route element={<ResetPassword />} path="/resetPassword/:token" />
+                        <Route element={<Home />} path="/home" />   
+                        <Route element={<NewPizza />} path="/newPizza" />                      
+                        {/* <Route element={<Demo />} path="/demo" /> */}
+                        <Route element={<Single />} path="/single/:theid" />
                         <Route element={<SearchResults />} path="/search/:searchTerm" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
