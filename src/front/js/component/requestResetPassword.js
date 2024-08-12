@@ -11,7 +11,6 @@ export const RequestResetPassword  = () => {
     
     const handleClick = async(e) => {
         e.preventDefault()
-        console.log("primero")
         actions.resetPassword(email)
 
     }

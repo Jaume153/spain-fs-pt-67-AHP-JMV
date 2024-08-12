@@ -182,6 +182,41 @@ const getState = ({ getStore, getActions, setStore }) => {
 			logOut: async() => {
 				localStorage.removeItem("token");
 			},
+			// orders: async() => {
+			// 	try {
+			// 		let response = await fetch (`${process.env.BACKEND_URL}api/orders`)
+			// 		const data = await response.json()
+			// 		return "ASDASD"
+			// 	} catch (error) {
+			// 		return false
+			// 	}
+			// },
+			createOrder: async (user_id, id) => {
+				try{
+					let response = await fetch(`${process.env.BACKEND_URL}api/orders`, {
+						method: "POST",
+						headers: {
+							"Content-Type" : "application/json"
+						},
+						body: JSON.stringify({
+							"id": id,
+							"user_id" : user_id,
+							"payment_method" : "cash",
+							"status" : "pending"
+						})
+					})
+
+					const data = await response.json()
+					if (!data.msg){
+						return data
+					} else {
+						return data.msg
+					}
+
+				} catch(error) {
+					return false
+				}
+			},
 			resetPassword: async(email)=> {
 				try{
 					let response = await fetch (`${process.env.BACKEND_URL}api/requestResetPassword`, {
