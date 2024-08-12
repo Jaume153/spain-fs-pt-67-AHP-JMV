@@ -27,7 +27,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getPizzas: async () => {
 				try{
 					// fetching data from the backend
-					const resp = await fetch("https://upgraded-guide-9r4pgx45v5p3x4pr-3001.app.github.dev/api/pizzas")
+					const resp = await fetch(`${process.env.BACKEND_URL}api/pizzas`)
 					const data = await resp.json()
 					setStore({ pizzas: data.data })
 					// don't forget to return something, that is how the async resolves
@@ -38,7 +38,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			login: async(email, password) => {
 				try{
-					let response = await fetch ("https://upgraded-guide-9r4pgx45v5p3x4pr-3001.app.github.dev/api/login", {
+					let response = await fetch (`${process.env.BACKEND_URL}api/login`, {
 						method: "POST",
 						headers: {
 							"Content-Type" : "application/json"
@@ -58,7 +58,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 
 				} catch(error) {
-					return false
+					return error
 				}
 			},
 
@@ -80,8 +80,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const data = await response.json()
 					if (!data.msg){
 						localStorage.setItem("token", data.access_token)
+						return true
+					} else {
+						return data.msg
 					}
-					return true
 
 				} catch(error) {
 					return false
@@ -90,6 +92,31 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			logOut: async() => {
 				localStorage.removeItem("token");
+			},
+			resetPassword: async(email)=> {
+				console.log("segundo")
+				try{
+					let response = await fetch (`${process.env.BACKEND_URL}api/requestResetPassword`, {
+						method: "POST",
+						headers: {
+							"Content-Type" : "application/json"
+						},
+						body: JSON.stringify({
+							"email" : email
+						})
+					})
+					console.log("tercero")
+					const data = await response.json()
+					if (data){
+						alert(data)
+						return data
+					}
+					alert(data)
+
+				} catch(error) {
+					console.log("cuarto")
+					return false
+				}
 			},
 
 			changeColor: (index, color) => {
