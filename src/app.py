@@ -11,6 +11,7 @@ from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_jwt_extended import JWTManager
+from flask_bcrypt import Bcrypt
 
 # from models import Person
 
@@ -21,6 +22,7 @@ app = Flask(__name__)
 
 app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'  # Cambia esto por una clave secreta segura
 jwt = JWTManager(app)
+bcrypt = Bcrypt(app)
 
 app.url_map.strict_slashes = False
 
