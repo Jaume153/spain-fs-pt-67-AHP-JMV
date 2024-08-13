@@ -10,8 +10,10 @@ import { ResetPassword } from "./component/resetPassword";
 import { Home } from "./pages/home";
 import { NewPizza } from "./component/newPizza";
 import { SearchResults } from "./pages/searchResults";
-import { Single } from "./pages/single";
+import { Cart } from "./pages/cart";
 import injectContext from "./store/appContext";
+import { Checkout} from "./pages/checkout";
+import { Confirmation} from "./pages/confirmation";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
@@ -32,12 +34,16 @@ const Layout = () => {
                     <Routes>
                         <Route element={<LoginForm />} path="/" />
                         <Route element={<RequestResetPassword />} path="/requestResetPassword" />
+                        {/* <Route element={<ResetPassword />} path="/resetPassword/:token" /> */}
+                        <Route element={<Confirmation/>} path="/confirmation" />   
+                        <Route element={<Checkout/>} path="/checkout" />
+                        <Route element={<Cart />} path="/cart" />
                         <Route element={<Register />} path="/register" />
                         <Route element={<ResetPassword />} path="/resetPassword/:token" />
                         <Route element={<Home />} path="/home" />   
                         <Route element={<NewPizza />} path="/newPizza" />                      
                         {/* <Route element={<Demo />} path="/demo" /> */}
-                        <Route element={<Single />} path="/single/:theid" />
+                        
                         <Route element={<SearchResults />} path="/search/:searchTerm" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
