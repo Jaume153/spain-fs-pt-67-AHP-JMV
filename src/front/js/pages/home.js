@@ -1,26 +1,28 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";  
+import { useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import "../../styles/home.css";
 
 export const Home = () => {
 	const { store, actions } = useContext(Context);
 	const [searchTerm, setSearchTerm] = useState("");
-	const navigate = useNavigate();  
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		actions.getPizzas();
 	}, []);
 
-	
+
 	const handleSearch = () => {
 		navigate(`/search/${searchTerm}`);
 	};
 
-	const handleAddToCart = (pizza) => {        
-        actions.addToCart(pizza);
-        navigate("/cart");
-    };
+	const handleAddToCart = (pizza) => {
+		actions.addToCart(pizza);
+		navigate("/cart");
+	};
 
 	const pizzasPerSlide = 4;
 	const groupedPizzas = [];
@@ -29,6 +31,8 @@ export const Home = () => {
 	}
 
 	return (
+
+
 		<div className="text-center mt-5">
 			<div className="container">
 				<div className="row mb-3">
@@ -36,15 +40,17 @@ export const Home = () => {
 						<input
 							type="text"
 							className="form-control w-25"
-							placeholder="Buscar por ingredientes"
+							placeholder="Search by ingredients"
 							value={searchTerm}
 							onChange={(e) => setSearchTerm(e.target.value)}
 						/>
-						<button className="btn btn-primary ms-2" onClick={handleSearch}>Buscar</button>
-					</div>
-				</div>
+						<button className="btn btn-primary ms-2" onClick={handleSearch}>Go</button>
+						<button className="btn btn-outline-dark ms-2" onClick={() => navigate("/cart")}>
+							<FontAwesomeIcon icon={faShoppingCart} /> 
+							</button>	
 
-				
+					</div>
+				</div>				
 				<section className="cabecera-carrusel">
 					<img src="https://www.dominospizza.es/images/02_Tier-Menu-CLAZZICAS-2022.png" alt="Clazzicas" />
 				</section>
@@ -80,7 +86,7 @@ export const Home = () => {
 					</button>
 				</div>
 
-				
+
 				<section className="cabecera-carrusel">
 					<img src="https://www.dominospizza.es/images/02_Tier-Menu-DELUXES-2022.png" alt="Clazzicas" />
 				</section>
@@ -99,7 +105,7 @@ export const Home = () => {
 											/>
 											<h5>{pizza.name}</h5>
 											<p>{pizza.description}</p>
-											<button className="btn btn-success mt-2" onClick={() => handleAddToCart(pizza)}>Anadir al Carrito</button>
+											<button className="btn btn-success mt-2" onClick={() => handleAddToCart(pizza)}>Add to cart</button>
 										</div>
 									))}
 								</div>
