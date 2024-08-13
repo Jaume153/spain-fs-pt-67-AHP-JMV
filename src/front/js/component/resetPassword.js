@@ -12,7 +12,7 @@ export const ResetPassword  = () => {
 
     const handleClick = async(e) => {
         e.preventDefault()
-        actions.resetPassword(newPassword, repeatNewPassword)
+        actions.resetPassword(newPassword, repeatNewPassword, searchParams.get('token'))
 
     }
     return (

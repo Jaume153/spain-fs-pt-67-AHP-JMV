@@ -34,7 +34,6 @@ const Layout = () => {
                     <Routes>
                         <Route element={<LoginForm />} path="/" />
                         <Route element={<RequestResetPassword />} path="/requestResetPassword" />
-                        {/* <Route element={<ResetPassword />} path="/resetPassword/:token" /> */}
                         <Route element={<Confirmation/>} path="/confirmation" />   
                         <Route element={<Checkout/>} path="/checkout" />
                         <Route element={<Cart />} path="/cart" />
