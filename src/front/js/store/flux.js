@@ -19,6 +19,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
 			},
+
 			getMessage: async () => {
 				try{
 					// fetching data from the backend
@@ -27,6 +28,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error loading message from backend", error)
 				}
 			},
+
 			getPizzas: async () => {
 				try{
 					// fetching data from the backend
@@ -39,7 +41,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error loading message from backend", error)
 				}
 			},
-
 
 			loadCart: async () => {
                 try {
@@ -65,7 +66,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log("Error loading cart:", error);
                 }
             },
-
 
 			addToCart: async (pizza) => {
 				try {
@@ -182,7 +182,45 @@ const getState = ({ getStore, getActions, setStore }) => {
 			logOut: async() => {
 				localStorage.removeItem("token");
 			},
-			resetPassword: async(email)=> {
+
+			// orders: async() => {
+			// 	try {
+			// 		let response = await fetch (`${process.env.BACKEND_URL}api/orders`)
+			// 		const data = await response.json()
+			// 		return "ASDASD"
+			// 	} catch (error) {
+			// 		return false
+			// 	}
+			// },
+
+			createOrder: async (user_id, id) => {
+				try{
+					let response = await fetch(`${process.env.BACKEND_URL}api/orders`, {
+						method: "POST",
+						headers: {
+							"Content-Type" : "application/json"
+						},
+						body: JSON.stringify({
+							"id": id,
+							"user_id" : user_id,
+							"payment_method" : "cash",
+							"status" : "pending"
+						})
+					})
+
+					const data = await response.json()
+					if (!data.msg){
+						return data
+					} else {
+						return data.msg
+					}
+
+				} catch(error) {
+					return false
+				}
+			},
+
+			requestResetPassword: async(email)=> {
 				try{
 					let response = await fetch (`${process.env.BACKEND_URL}api/requestResetPassword`, {
 						method: "POST",
@@ -204,26 +242,57 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false
 				}
 			},
+
+			resetPassword: async(password, repeatPassword, token)=> {
+				if (password != repeatPassword) {
+					alert ("not the same")
+					return
+				}
+				try{
+					let response = await fetch (`${process.env.BACKEND_URL}api/resetPassword`, {
+						method: "POST",
+						headers: {
+							"Content-Type" : "application/json",
+							'Authorization': 'Bearer ' + token 
+						},
+						body: JSON.stringify({
+							"password" : password
+						})
+					})
+					const data = await response.json()
+					if (data){
+						alert(data.msg)
+						return data.msg
+					}
+					alert("BB")
+
+				} catch(error) {
+					alert ("CC")
+					return false
+				}
+			},
+
 			upload_pizza: async(pizzaName, description, price, photo, pizzaType) => {
+				const formData = new FormData()
+				formData.append('file', photo)
+				formData.append('name', pizzaName)
+				formData.append('price', price)
+				formData.append('description', description)
+				formData.append('pizza_type', pizzaType)
 				try{
 					let response = await fetch (`${process.env.BACKEND_URL}api/pizzas`, {
 						method: "POST",
 						headers: {
-							"Content-Type" : "application/json"
+							'Authorization': 'Bearer ' + token 
 						},
-						body: JSON.stringify({
-							"name" : pizzaName,
-							"url" : photo,
-							"price" : price,
-							"description" : description,
-							"pizza_type" : pizzaType
-						})
+						body: formData
 					})
 					const data = await response.json()
 				} catch {
 
 				}
 			},
+
 			upload_pizza_photo: async(file) => {
 				try{
 					let response = await fetch (`${process.env.BACKEND_URL}api/pizzas`, {
@@ -239,6 +308,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				}
 			},
+
 			changeColor: (index, color) => {
 				//get the store
 				const store = getStore();

@@ -6,16 +6,16 @@ from api.models import db, User, Pizza, Order, OrderItems, Ingredient, PizzaIngr
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 from flask_cors import CORS
-from flask_bcrypt import Bcrypt
 import cloudinary
 from cloudinary.uploader import upload
+from flask_bcrypt import check_password_hash, generate_password_hash
 
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 api = Blueprint('api', __name__)
-# bcrypt = Bcrypt(api)
+
 
 # Allow CORS requests to this API
 CORS(api)
@@ -28,12 +28,13 @@ cloudinary.config(
 @api.route('/uploadPizzaPhoto', methods = ['POST'])
 def new_pizza_photo(): 
     file = request.files['file']
+    name = request.form['name']
     if file.filename == '':
         return jsonify({"error" : "No selected file"}), 404
     
     try:
         result = upload	(file)
-        return jsonify({"url" : result['url']})
+        return jsonify({"url" : result['url'], "asd": name})
     except Exception as e:
         return jsonify({"error" : str(e)})
     
@@ -81,9 +82,7 @@ def login():
     password = request.json.get('password', None)
     email = request.json.get('email', None)
     users_query = User.query.filter_by(email=email).first()
-    # is_valid = bcrypt.check_password_hash(users_query.password, password)
-    if users_query:
-        is_valid = (password == users_query.password)
+    is_valid = check_password_hash(users_query.password, password)
 
     if not users_query:
         return jsonify({"msg": "Doesn't exist"}), 402
@@ -109,11 +108,11 @@ def register():
     if User.query.filter_by(email=request_body["email"]).first():
         return jsonify({"msg": "Email already exists"}), 409
    
-    # encriptedPassword = bcrypt.generate_password_hash(request_body["password"]).decode('utf-8')
+    encriptedPassword = generate_password_hash(request_body["password"]).decode('utf-8')
     user = User()
     user.new_user(
         email = request_body["email"],    
-        password = request_body["password"],
+        password = encriptedPassword,
         lastname = request_body["lastname"],
         firstname = request_body["firstname"],
         role = request_body["role"]
@@ -133,7 +132,7 @@ def requestResetPassword():
     email = request_body["email"]
 
     if User.query.filter_by(email=request_body["email"]).first():
-        token  = create_access_token(identity=request_body["email"])
+        token  = create_access_token(identity=request_body["email"]) 
         sender_email = "liina.hp96@gmail.com"
         receiver_email = email
         subject = "Recuperar contraseña"
@@ -142,7 +141,7 @@ def requestResetPassword():
         <body>
             <p>Hi,<br>
             Haz click aqui para recuperar tu contraseña
-            <a href="https://upgraded-guide-9r4pgx45v5p3x4pr-3000.app.github.dev/resetPassword/""" + token +"""`" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Recuperarla!</a>
+            <a style="color: red" href="https://upgraded-guide-9r4pgx45v5p3x4pr-3000.app.github.dev/resetPassword?token=""" + token +"""" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Recuperarla!</a>
                 </td>
             </tr>
         </table>
@@ -153,7 +152,7 @@ def requestResetPassword():
         # Create a multipart message and set headers
         message = MIMEMultipart()
         message["From"] = "liina.hp96@gmail.com"
-        message["To"] = "alinka_96@hotmail.com"
+        message["To"] = email
         message["Subject"] = subject
 
         # Attach the HTML part
@@ -167,9 +166,15 @@ def requestResetPassword():
     else:
         return jsonify("NotSent"), 400
 
-@api.route('/resetPassword/:token', methods=['POST'])
+@api.route('/resetPassword', methods=['POST'])
+@jwt_required()
 def resetPassword():
     request_body = request.get_json()
+    newPassword = request_body["password"]
+    encriptedPassword = generate_password_hash(newPassword).decode('utf-8')
+    user_email = get_jwt_identity()
+    print (user_email)
+    return jsonify({"msg": "Good"}) , 200
 
 @api.route('/pizzas', methods = ['GET'])
 def get_pizzas(): 
@@ -184,31 +189,53 @@ def get_pizzas():
     return jsonify(response_body), 200
 
 @api.route('/pizzas', methods=['POST'])
-@jwt_required()
+# @jwt_required()
+# def new_pizza_photo(): 
+#     file = request.files['file']
+#     if file.filename == '':
+#         return jsonify({"error" : "No selected file"}), 404
+    
+#     try:
+#         result = upload	(file)
+#         return jsonify({"url" : result['url']})
+#     except Exception as e:
+#         return jsonify({"error" : str(e)})
+    
 def add_pizza():
-    request_body = request.get_json()
-
-    if Pizza.query.filter_by(name=request_body["name"]).first():
+    print("1")  
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"msg" : "No selected file"}), 404
+    if Pizza.query.filter_by(name=request.form["name"]).first():
         return jsonify({"msg": "Duplicated pizza"}), 409
-    jtw_data = get_jwt()
-    user_role = jtw_data["user_role"]
-    if user_role == "Admin":
+    
+    # jtw_data = get_jwt()
+    # user_role = jtw_data["user_role"]
+    # if user_role != "Admin":
+    #     return jsonify({"msg" : "Not authorized"}), 401
+    print("2")
+    try:
+        result = upload	(file)
+
+        print("3")
         pizza = Pizza()
         pizza.new_pizza(   
-            name = request_body["name"],
-            url = request_body["url"],
-            price = request_body["price"],
-            description = request_body["description"],
-            pizza_type = request_body["pizza_type"]
+            name = request.form["name"],
+            url = result['url'],
+            price = request.form["price"],
+            description = request.form["description"],
+            pizza_type = request.form["pizza_type"]
         )
-
+        print("4")
         db.session.add(pizza)
         db.session.commit()
         return jsonify({"msg": "Pizza created", "pizza": pizza.serialize()}),201
-    return jsonify({"msg": user_role}),400
+    except Exception as e:
+        print("5")
+        return jsonify({"error" : str(e)}) , 410
+    
 
 @api.route('/pizzas/<int:pizza_id>', methods = ['GET'])
-@jwt_required()
 def get_pizza(pizza_id): 
     pizza = Pizza.query.get(pizza_id)
     if pizza is None:

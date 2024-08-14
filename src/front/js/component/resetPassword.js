@@ -1,21 +1,18 @@
-import React, {useContext, useEffect, useState} from "react"
+import React, {useContext, useState} from "react"
 import { Context } from "../store/appContext"
-import { useNavigate } from "react-router-dom"
-import { useParams } from "react-router-dom"
-
+import { useNavigate, useSearchParams } from "react-router-dom"
 
 export const ResetPassword  = () => {
-
-    const navigate = useNavigate()
+    
+    const [searchParams, setSearchParams] = useSearchParams();
     const {actions} = useContext(Context)
     const [newPassword, setNewPassword] = useState("")
     const [repeatNewPassword, setRepeatNewPassword] = useState("")
-    const params = useParams();
-
+    console.log(searchParams.get('token'))
 
     const handleClick = async(e) => {
         e.preventDefault()
-        actions.resetPassword(newPassword, repeatNewPassword, params.token)
+        actions.resetPassword(newPassword, repeatNewPassword, searchParams.get('token'))
 
     }
     return (
