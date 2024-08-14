@@ -179,7 +179,6 @@ def get_pizzas():
 
 @api.route('/pizzas', methods=['POST'])    
 def add_pizza():
-    print("1")  
     file = request.files['file']
     if file.filename == '':
         return jsonify({"msg" : "No selected file"}), 404
@@ -237,9 +236,12 @@ def delete_pizza(pizza_id):
 def get_orders(): 
     orders = Order.query.all()
     orders_serialized = list(map(lambda item:item.serialize(), orders))
+    jtw_data = get_jwt()
+    user_id = jtw_data["user_id"]
     response_body = {
         "message" : "ok!",
-        "data": orders_serialized
+        "data": orders_serialized,
+        "user_id": user_id
     }
     if (get_orders == []):
         return jsonify({"msg": "Not orders yet"}), 404
@@ -249,18 +251,19 @@ def get_orders():
 @jwt_required()
 def new_order():
     request_body = request.get_json()
-    if Order.query.filter_by(id=request_body["id"]).first():
-        return jsonify({"msg": "Duplicated order"}), 409
     jtw_data = get_jwt()
     user_id = jtw_data["user_id"]
+    if Order.query.filter_by(id=user_id).first():
+        return jsonify({"msg": "Duplicated order"}), 409
+    print(user_id)
     order = Order()
     order.new_order(
-        status="Pending",
+        status= request_body["status"],
+        payment_method = request_body["payment_method"],
         user_id= user_id
     )
     db.session.add(order)
     db.session.commit()
-
     return jsonify({"msg": "Order created", "order": order.serialize()}), 201
 
 @api.route('/orders/<int:order_id>', methods = ['GET'])

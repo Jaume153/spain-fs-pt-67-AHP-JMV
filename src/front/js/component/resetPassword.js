@@ -8,7 +8,6 @@ export const ResetPassword  = () => {
     const {actions} = useContext(Context)
     const [newPassword, setNewPassword] = useState("")
     const [repeatNewPassword, setRepeatNewPassword] = useState("")
-    console.log(searchParams.get('token'))
 
     const handleClick = async(e) => {
         e.preventDefault()
