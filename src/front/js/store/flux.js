@@ -1,5 +1,3 @@
-import { element } from "prop-types";
-
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -20,6 +18,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					id: ""
 				}
 			],
+			
+			pizzaTypes: {  
+                classic: [],
+                deluxe: []
+            },
 
 			cart: [],
 			orderId: null
@@ -37,7 +40,25 @@ const getState = ({ getStore, getActions, setStore }) => {
 				try{
 					const resp = await fetch(`${process.env.BACKEND_URL}api/pizzas`)
 					const data = await resp.json()
-					setStore({ pizzas: data.data })
+
+					console.log("Datos de la API:", data);
+					console.log(data.data[0].pizza_type);
+
+					const classicPizzas = data.data.filter(pizza => pizza.pizza_type === "Classic");
+                    const deluxePizzas = data.data.filter(pizza => pizza.pizza_type === "Deluxe");
+
+					console.log("Classic Pizzas:", classicPizzas);  
+        			console.log("Deluxe Pizzas:", deluxePizzas);
+
+                    setStore({                        
+                        pizzaTypes: {
+                            classic: classicPizzas,
+                            deluxe: deluxePizzas
+                        }
+                    });
+
+					//setStore({ pizzas: data.data })
+					// don't forget to return something, that is how the async resolves
 					return data;
 				}catch(error){
 					return ("Error loading message from backend", error)
@@ -95,7 +116,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 							"Content-Type": "application/json"
 						},
 						body: JSON.stringify({
-							order_id: orderId,
+							order_id: orderId,  
 							pizza_id: pizza.id
 						})
 					});
