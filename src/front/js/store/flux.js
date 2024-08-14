@@ -84,7 +84,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						});
 						const orderData = await resp.json();
 						orderId = orderData.order.id;
-						setStore({ orderId: orderId });  // Actualiza el orderId en el estado
+						setStore({ orderId: orderId });  
 					}                    
 				   
 					const itemResp = await fetch(`${process.env.BACKEND_URL}/api/orderitems`, {
@@ -93,7 +93,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 							"Content-Type": "application/json"
 						},
 						body: JSON.stringify({
-							order_id: orderId,  // Usa el nuevo orderId aquí
+							order_id: orderId,  
 							pizza_id: pizza.id
 						})
 					});

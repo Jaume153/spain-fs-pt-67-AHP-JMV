@@ -20,9 +20,20 @@ export const Home = () => {
 	};
 
 	const handleAddToCart = (pizza) => {
-		actions.addToCart(pizza);
-		navigate("/cart");
+		actions.addToCart(pizza)
+		.then((result) => {
+			console.log("Pizza añadida:", result);
+			navigate("/cart");
+		})
+		.catch((error) => {
+			console.log("Error al añadir la pizza:", error);
+		});
 	};
+
+	// const handleAddToCart = (pizza) => {
+	// 	actions.addToCart(pizza);
+	// 	navigate("/cart");
+	// };
 
 	const pizzasPerSlide = 4;
 	const groupedPizzas = [];
@@ -31,12 +42,10 @@ export const Home = () => {
 	}
 
 	return (
-
-
 		<div className="text-center mt-5">
 			<div className="container">
 				<div className="row mb-3">
-					<div className="col-12 d-flex justify-content-start">
+					<div className="col-12 d-flex justify-content-start align-items-center">
 						<input
 							type="text"
 							className="form-control w-25"
@@ -46,77 +55,76 @@ export const Home = () => {
 						/>
 						<button className="btn btn-primary ms-2" onClick={handleSearch}>Go</button>
 						<button className="btn btn-outline-dark ms-2" onClick={() => navigate("/cart")}>
-							<FontAwesomeIcon icon={faShoppingCart} /> 
-							</button>	
-
+							<FontAwesomeIcon icon={faShoppingCart} />
+						</button>
 					</div>
-				</div>				
-				<section className="cabecera-carrusel">
-					<img src="https://www.dominospizza.es/images/02_Tier-Menu-CLAZZICAS-2022.png" alt="Clazzicas" />
+				</div>
+
+				<section className="cabecera-carrusel1">
+					<img src="https://www.dominospizza.es/images/02_Tier-Menu-CLAZZICAS-2022.png" alt="Clazzicas" className="header-img" />
 				</section>
 
 				<div id="pizzaCarousel1" className="carousel slide mb-5">
 					<div className="carousel-inner">
 						{groupedPizzas.map((group, groupIndex) => (
 							<div key={groupIndex} className={`carousel-item ${groupIndex === 0 ? "active" : ""}`}>
-								<div className="d-flex justify-content-center">
+								<div className="row justify-content-center">
 									{group.map((pizza, index) => (
-										<div key={index} className="pizza-item mx-2">
-											<img
-												src={pizza.url}
-												alt={pizza.name}
-												className="img-fluid"
-											/>
-											<h5>{pizza.name}</h5>
-											<p>{pizza.description}</p>
-											<button className="btn btn-success mt-2" onClick={() => handleAddToCart(pizza)}>Add to cart</button>
+										<div key={index} className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
+											<div className="pizza-item text-center">
+												<img src={pizza.url} alt={pizza.name} className="img-fluid pizza-img" />
+												<div className="pizza-info">
+													<h5>{pizza.name}</h5>
+													<p>{pizza.description}</p>
+												</div>
+												<button className="btn btn-success mt-2" onClick={() => handleAddToCart(pizza)}>Add to cart</button>
+											</div>
 										</div>
 									))}
 								</div>
 							</div>
 						))}
 					</div>
-					<button className="carousel-control-prev" type="button" data-bs-target="#pizzaCarousel1" data-bs-slide="prev">
+					<button className="carousel-control-prev" type="button" data-bs-target="#pizzaCarousel1">
 						<span className="carousel-control-prev-icon" aria-hidden="true"></span>
 						<span className="visually-hidden">Previous</span>
 					</button>
-					<button className="carousel-control-next" type="button" data-bs-target="#pizzaCarousel1" data-bs-slide="next">
+					<button className="carousel-control-next" type="button" data-bs-target="#pizzaCarousel1">
 						<span className="carousel-control-next-icon" aria-hidden="true"></span>
 						<span className="visually-hidden">Next</span>
 					</button>
 				</div>
 
-
-				<section className="cabecera-carrusel">
-					<img src="https://www.dominospizza.es/images/02_Tier-Menu-DELUXES-2022.png" alt="Clazzicas" />
+				<section className="cabecera-carrusel2">
+					<img src="https://www.dominospizza.es/images/02_Tier-Menu-DELUXES-2022.png" alt="Deluxes" className="header-img" />
 				</section>
 
 				<div id="pizzaCarousel2" className="carousel slide">
 					<div className="carousel-inner">
 						{groupedPizzas.map((group, groupIndex) => (
 							<div key={groupIndex} className={`carousel-item ${groupIndex === 0 ? "active" : ""}`}>
-								<div className="d-flex justify-content-center">
+								<div className="row justify-content-center">
 									{group.map((pizza, index) => (
-										<div key={index} className="pizza-item mx-2">
-											<img
-												src={pizza.url}
-												alt={pizza.name}
-												className="img-fluid"
-											/>
-											<h5>{pizza.name}</h5>
-											<p>{pizza.description}</p>
-											<button className="btn btn-success mt-2" onClick={() => handleAddToCart(pizza)}>Add to cart</button>
+										<div key={index} className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
+											<div className="pizza-item text-center">
+												<img src={pizza.url} alt={pizza.name} className="img-fluid pizza-img" />
+												<div className="pizza-info">
+													<h5>{pizza.name}</h5>
+													<p>{pizza.description}</p>
+												</div>
+												<button className="btn btn-success mt-2" onClick={() => handleAddToCart(pizza)}>Add to cart</button>
+											</div>
 										</div>
 									))}
 								</div>
 							</div>
 						))}
 					</div>
-					<button className="carousel-control-prev" type="button" data-bs-target="#pizzaCarousel2" data-bs-slide="prev">
+					<button className="carousel-control-prev" type="button" data-bs-target="#pizzaCarousel2">
 						<span className="carousel-control-prev-icon" aria-hidden="true"></span>
 						<span className="visually-hidden">Previous</span>
 					</button>
-					<button className="carousel-control-next" type="button" data-bs-target="#pizzaCarousel2" data-bs-slide="next">
+					<button className="carousel-control-next" type="button" data-bs-target="#pizzaCarousel2">
 						<span className="carousel-control-next-icon" aria-hidden="true"></span>
 						<span className="visually-hidden">Next</span>
 					</button>
