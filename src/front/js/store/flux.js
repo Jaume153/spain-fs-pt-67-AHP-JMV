@@ -1,3 +1,5 @@
+import { element } from "prop-types";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -10,35 +12,35 @@ const getState = ({ getStore, getActions, setStore }) => {
 					url: ""
 				}
 			],
+			order: [
+				{
+					user_id: "",
+					orderStatus: "",
+					payment_method :"",
+					id: ""
+				}
+			],
 
 			cart: [],
 			orderId: null
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-
 			getMessage: async () => {
 				try{
-					// fetching data from the backend
-					console.log("ASDFADF")
+					return
 				}catch(error){
-					console.log("Error loading message from backend", error)
+					return ("Error loading message from backend", error)
 				}
 			},
 
 			getPizzas: async () => {
 				try{
-					// fetching data from the backend
 					const resp = await fetch(`${process.env.BACKEND_URL}api/pizzas`)
 					const data = await resp.json()
 					setStore({ pizzas: data.data })
-					// don't forget to return something, that is how the async resolves
 					return data;
 				}catch(error){
-					console.log("Error loading message from backend", error)
+					return ("Error loading message from backend", error)
 				}
 			},
 
@@ -63,7 +65,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         }
                     }
                 } catch (error) {
-                    console.log("Error loading cart:", error);
+                    return ("Error loading cart:", error);
                 }
             },
 
@@ -84,7 +86,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						});
 						const orderData = await resp.json();
 						orderId = orderData.order.id;
-						setStore({ orderId: orderId });  // Actualiza el orderId en el estado
+						setStore({ orderId: orderId });
 					}                    
 				   
 					const itemResp = await fetch(`${process.env.BACKEND_URL}/api/orderitems`, {
@@ -93,7 +95,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 							"Content-Type": "application/json"
 						},
 						body: JSON.stringify({
-							order_id: orderId,  // Usa el nuevo orderId aquí
+							order_id: orderId,
 							pizza_id: pizza.id
 						})
 					});
@@ -102,7 +104,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					
 					return newItemData;
 				} catch (error) {
-					console.log("Error adding to cart:", error);
+					return ("Error adding to cart:", error);
 				}
 			},
 
@@ -120,7 +122,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         setStore({ cart: updatedCart });
                     }
                 } catch (error) {
-                    console.log("Error removing item from cart:", error);
+                    return ("Error removing item from cart:", error);
                 }
             },
 		
@@ -137,7 +139,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						})
 					})
 					const data = await response.json()
-					console.log(data.msg)
 					if (!data.msg){
 						localStorage.setItem("token", data.access_token);
 						return true
@@ -182,32 +183,43 @@ const getState = ({ getStore, getActions, setStore }) => {
 			logOut: async() => {
 				localStorage.removeItem("token");
 			},
+			getOrder: async(token) => {
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}api/orders`, {
+						method: "GET",
+						headers: {
+							'Authorization': 'Bearer ' + token 
+						},
+					})
+					const data = await response.json()
+					let findUserOrder = data.data.filter((element)=> element.user_id == data.user_id)
+					let userPendingOrders = findUserOrder.find((e) => e.status == "Pending")
+					if (data.data == "" || !userPendingOrders){
+						getActions().createOrder(data.user_id, token)
+					} else {
+						setStore({ order: userPendingOrders })
+						return
+					}
+					return true
+				} catch (error) {
+					return error
+				}
+			},
 
-			// orders: async() => {
-			// 	try {
-			// 		let response = await fetch (`${process.env.BACKEND_URL}api/orders`)
-			// 		const data = await response.json()
-			// 		return "ASDASD"
-			// 	} catch (error) {
-			// 		return false
-			// 	}
-			// },
-
-			createOrder: async (user_id, id) => {
+			createOrder: async (user_id, token) => {
 				try{
 					let response = await fetch(`${process.env.BACKEND_URL}api/orders`, {
 						method: "POST",
 						headers: {
-							"Content-Type" : "application/json"
+							"Content-Type" : "application/json",
+							'Authorization': 'Bearer ' + token 
 						},
 						body: JSON.stringify({
-							"id": id,
-							"user_id" : user_id,
 							"payment_method" : "cash",
 							"status" : "pending"
 						})
 					})
-
+					
 					const data = await response.json()
 					if (!data.msg){
 						return data
@@ -250,7 +262,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				try{
 					let response = await fetch (`${process.env.BACKEND_URL}api/resetPassword`, {
-						method: "POST",
+						method: "PATCH",
 						headers: {
 							"Content-Type" : "application/json",
 							'Authorization': 'Bearer ' + token 
@@ -267,12 +279,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 					alert("BB")
 
 				} catch(error) {
-					alert ("CC")
+					alert (error)
 					return false
 				}
 			},
 
-			upload_pizza: async(pizzaName, description, price, photo, pizzaType) => {
+			upload_pizza: async(pizzaName, description, price, photo, pizzaType, token) => {
 				const formData = new FormData()
 				formData.append('file', photo)
 				formData.append('name', pizzaName)
@@ -288,41 +300,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 						body: formData
 					})
 					const data = await response.json()
-				} catch {
-
+					return 
+				} catch (error) {
+					return false
 				}
 			},
-
-			upload_pizza_photo: async(file) => {
-				try{
-					let response = await fetch (`${process.env.BACKEND_URL}api/pizzas`, {
-						method: "POST",
-						headers: {
-							"Content-Type" : "application/json"
-						},
-						body: JSON.stringify({
-							"file" : file
-						})
-					})
-				} catch {
-
-				}
-			},
-
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
-
-				//reset the global store
-				setStore({ demo: demo });
-			}
 		}
 	};
 };
