@@ -15,12 +15,10 @@ export const NewPizza  = () => {
     const handleLogin = async(e) => {
         const photoImput = document.getElementById("pizza_img") 
         const photo = photoImput.files[0]
-        console.log(typeof(photo))
-        console.log(photoImput)
-        console.log(photo)
+        const token = localStorage.getItem("token")
 
         e.preventDefault()
-        const addPizza = await actions.upload_pizza(name, description, price, photo, type)
+        const addPizza = await actions.upload_pizza(name, description, price, photo, type, token)
         if (addPizza == true){
             navigate("/home")
         }

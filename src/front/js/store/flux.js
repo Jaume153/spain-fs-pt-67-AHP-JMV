@@ -183,16 +183,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				localStorage.removeItem("token");
 			},
 
-			// orders: async() => {
-			// 	try {
-			// 		let response = await fetch (`${process.env.BACKEND_URL}api/orders`)
-			// 		const data = await response.json()
-			// 		return "ASDASD"
-			// 	} catch (error) {
-			// 		return false
-			// 	}
-			// },
-
 			createOrder: async (user_id, id) => {
 				try{
 					let response = await fetch(`${process.env.BACKEND_URL}api/orders`, {
@@ -250,7 +240,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				try{
 					let response = await fetch (`${process.env.BACKEND_URL}api/resetPassword`, {
-						method: "POST",
+						method: "PATCH",
 						headers: {
 							"Content-Type" : "application/json",
 							'Authorization': 'Bearer ' + token 
@@ -267,12 +257,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 					alert("BB")
 
 				} catch(error) {
-					alert ("CC")
+					alert (error)
 					return false
 				}
 			},
 
-			upload_pizza: async(pizzaName, description, price, photo, pizzaType) => {
+			upload_pizza: async(pizzaName, description, price, photo, pizzaType, token) => {
 				const formData = new FormData()
 				formData.append('file', photo)
 				formData.append('name', pizzaName)
@@ -288,8 +278,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 						body: formData
 					})
 					const data = await response.json()
-				} catch {
-
+					return 
+				} catch (error) {
+					return false
 				}
 			},
 
