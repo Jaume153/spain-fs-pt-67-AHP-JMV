@@ -24,19 +24,6 @@ cloudinary.config(
     api_key= "939219197872851",
     api_secret = "tIZi6_K2YdSLcvDLNAkLY_XcipU"
 )
- 
-@api.route('/uploadPizzaPhoto', methods = ['POST'])
-def new_pizza_photo(): 
-    file = request.files['file']
-    name = request.form['name']
-    if file.filename == '':
-        return jsonify({"error" : "No selected file"}), 404
-    
-    try:
-        result = upload	(file)
-        return jsonify({"url" : result['url'], "asd": name})
-    except Exception as e:
-        return jsonify({"error" : str(e)})
     
 @api.route('/users', methods = ['GET'])
 def get_users(): 
@@ -166,14 +153,16 @@ def requestResetPassword():
     else:
         return jsonify("NotSent"), 400
 
-@api.route('/resetPassword', methods=['POST'])
+@api.route('/resetPassword', methods=['PATCH'])
 @jwt_required()
 def resetPassword():
     request_body = request.get_json()
     newPassword = request_body["password"]
     encriptedPassword = generate_password_hash(newPassword).decode('utf-8')
     user_email = get_jwt_identity()
-    print (user_email)
+    users_query = User.query.filter_by(email=user_email).first()
+    users_query.password = encriptedPassword
+    db.session.commit()
     return jsonify({"msg": "Good"}) , 200
 
 @api.route('/pizzas', methods = ['GET'])
@@ -188,19 +177,7 @@ def get_pizzas():
         return jsonify({"msg": "Not pizzas yet"}), 404
     return jsonify(response_body), 200
 
-@api.route('/pizzas', methods=['POST'])
-# @jwt_required()
-# def new_pizza_photo(): 
-#     file = request.files['file']
-#     if file.filename == '':
-#         return jsonify({"error" : "No selected file"}), 404
-    
-#     try:
-#         result = upload	(file)
-#         return jsonify({"url" : result['url']})
-#     except Exception as e:
-#         return jsonify({"error" : str(e)})
-    
+@api.route('/pizzas', methods=['POST'])    
 def add_pizza():
     print("1")  
     file = request.files['file']
@@ -208,16 +185,12 @@ def add_pizza():
         return jsonify({"msg" : "No selected file"}), 404
     if Pizza.query.filter_by(name=request.form["name"]).first():
         return jsonify({"msg": "Duplicated pizza"}), 409
-    
     # jtw_data = get_jwt()
     # user_role = jtw_data["user_role"]
     # if user_role != "Admin":
     #     return jsonify({"msg" : "Not authorized"}), 401
-    print("2")
     try:
         result = upload	(file)
-
-        print("3")
         pizza = Pizza()
         pizza.new_pizza(   
             name = request.form["name"],
@@ -226,12 +199,10 @@ def add_pizza():
             description = request.form["description"],
             pizza_type = request.form["pizza_type"]
         )
-        print("4")
         db.session.add(pizza)
         db.session.commit()
         return jsonify({"msg": "Pizza created", "pizza": pizza.serialize()}),201
     except Exception as e:
-        print("5")
         return jsonify({"error" : str(e)}) , 410
     
 
@@ -282,10 +253,9 @@ def new_order():
         return jsonify({"msg": "Duplicated order"}), 409
     jtw_data = get_jwt()
     user_id = jtw_data["user_id"]
-    order = Order(
-        id=request_body["id"],
-        status=request_body["status"],
-        payment_method=request_body["payment_method"],
+    order = Order()
+    order.new_order(
+        status="Pending",
         user_id= user_id
     )
     db.session.add(order)

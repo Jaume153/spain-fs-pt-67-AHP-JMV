@@ -52,15 +52,15 @@ class User(db.Model):
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.Enum(StatusOrders), nullable=False, default = StatusOrders.pending)
-    payment_method = db.Column(db.Enum(PaymentMethods), nullable=False, default = PaymentMethods.credit_card)
+    payment_method = db.Column(db.Enum(PaymentMethods), nullable=True, default = PaymentMethods.credit_card)
     user_id = db.Column(db.Integer, db.ForeignKey(User.id, ondelete="CASCADE"), nullable=False)
 
     def __repr__(self):
         return '<Order %r>' % self.id
     
-    def new_order(self, status, payment_method, user_id):
+    def new_order(self, status, user_id):
         self.status = status
-        self.payment_method = payment_method
+        # self.payment_method = payment_method
         self.user_id = user_id
         db.session.add(self)
         db.session.commit()
@@ -100,7 +100,8 @@ class Pizza(db.Model):
             'name' : self.name,
             'description' : self.description,
             'url': self.url,
-            'pizza_type':self.pizza_type
+            'pizza_type': self.pizza_type
+            
 
         }
 class Ingredient(db.Model):
