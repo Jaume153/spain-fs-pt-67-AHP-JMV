@@ -15,6 +15,7 @@ export const LoginForm  = () => {
         const login = await actions.login(email, password)
         if (login === true) {
             navigate("/home")
+            actions.getOrder(localStorage.getItem("token"))
         } else {
             alert (login)
         }

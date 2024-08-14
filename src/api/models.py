@@ -58,9 +58,9 @@ class Order(db.Model):
     def __repr__(self):
         return '<Order %r>' % self.id
     
-    def new_order(self, status, user_id):
+    def new_order(self, status, user_id, payment_method):
         self.status = status
-        # self.payment_method = payment_method
+        self.payment_method = payment_method
         self.user_id = user_id
         db.session.add(self)
         db.session.commit()
@@ -68,8 +68,8 @@ class Order(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "status": self.status,
-            "payment_method": self.payment_method,
+            "status": self.status.value,
+            "payment_method": self.payment_method.value,
             "user_id":self.user_id,
         }
     
@@ -101,8 +101,6 @@ class Pizza(db.Model):
             'description' : self.description,
             'url': self.url,
             'pizza_type': self.pizza_type.value
-            
-
         }
 class Ingredient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
