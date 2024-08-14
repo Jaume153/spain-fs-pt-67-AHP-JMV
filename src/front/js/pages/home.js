@@ -30,11 +30,7 @@ export const Home = () => {
 		});
 	};
 
-	// const handleAddToCart = (pizza) => {
-	// 	actions.addToCart(pizza);
-	// 	navigate("/cart");
-	// };
-
+	
 	const pizzasPerSlide = 4;
 
 	const groupedClassicPizzas = [];
@@ -51,10 +47,6 @@ export const Home = () => {
 
 	console.log("Grouped Deluxe Pizzas:", groupedDeluxePizzas);
 	
-	// const groupedPizzas = [];
-	// for (let i = 0; i < store.pizzas.length; i += pizzasPerSlide) {
-	// 	groupedPizzas.push(store.pizzas.slice(i, i + pizzasPerSlide));
-	// }
 
 	return (
         <div className="text-center mt-5">
@@ -69,7 +61,7 @@ export const Home = () => {
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                         <button className="btn btn-primary ms-2" onClick={handleSearch}>Go</button>
-                        <button className="btn btn-outline-dark ms-2" onClick={() => navigate("/cart")}>
+                        <button className="btn btn-outline-dark ms-2" onClick={handleAddToCart}>
                             <FontAwesomeIcon icon={faShoppingCart} />
                         </button>
                     </div>
@@ -100,11 +92,11 @@ export const Home = () => {
                             </div>
                         ))}
                     </div>
-                    <button className="carousel-control-prev" type="button" data-bs-target="#pizzaCarousel1">
+                    <button className="carousel-control-prev" type="button" data-bs-target="#pizzaCarousel1"data-bs-slide="prev">
                         <span className="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span className="visually-hidden">Previous</span>
                     </button>
-                    <button className="carousel-control-next" type="button" data-bs-target="#pizzaCarousel1">
+                    <button className="carousel-control-next" type="button" data-bs-target="#pizzaCarousel1"data-bs-slide="next">
                         <span className="carousel-control-next-icon" aria-hidden="true"></span>
                         <span className="visually-hidden">Next</span>
                     </button>
@@ -135,11 +127,11 @@ export const Home = () => {
                             </div>
                         ))}
                     </div>
-                    <button className="carousel-control-prev" type="button" data-bs-target="#pizzaCarousel2">
+                    <button className="carousel-control-prev" type="button" data-bs-target="#pizzaCarousel2"data-bs-slide="prev">
                         <span className="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span className="visually-hidden">Previous</span>
                     </button>
-                    <button className="carousel-control-next" type="button" data-bs-target="#pizzaCarousel2">
+                    <button className="carousel-control-next" type="button" data-bs-target="#pizzaCarousel2"data-bs-slide="next">
                         <span className="carousel-control-next-icon" aria-hidden="true"></span>
                         <span className="visually-hidden">Next</span>
                     </button>

@@ -100,7 +100,7 @@ class Pizza(db.Model):
             'name' : self.name,
             'description' : self.description,
             'url': self.url,
-            'pizza_type': self.pizza_type
+            'pizza_type': self.pizza_type.value
             
 
         }
