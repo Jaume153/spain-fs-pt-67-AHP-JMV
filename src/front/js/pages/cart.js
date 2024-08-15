@@ -10,8 +10,12 @@ export const Cart = () => {
 
   
     useEffect(() => {
-        actions.loadCart();
-    }, []);
+        async function fetchData() {
+            await actions.getOrder(localStorage.getItem("token"));
+            await actions.loadCart(localStorage.getItem("token"));
+        }
+        fetchData()
+	}, []);
 
     const handleRemoveFromCart = (orderItemId) => {
         actions.removeFromCart(orderItemId);
@@ -24,11 +28,11 @@ export const Cart = () => {
             <div className="cart-items">
                 {store.cart.map((item, index) => (
                     <div key={index} className="cart-item d-flex justify-content-between align-items-center">
-                        <img src={item.pizza.url} alt={item.pizza.name} className="img-fluid cart-img" />
+                        <img src={item.url} alt={item.name} className="img-fluid cart-img" />
                         <div>
-                            <h5>{item.pizza.name}</h5>
-                            <p>{item.pizza.description}</p>
-                            <span>Price: ${item.pizza.price}</span>
+                            <h5>{item.name}</h5>
+                            <p>{item.description}</p>
+                            <span>Price: ${item.price}</span>
                         </div>
                         <button 
                             className="btn btn-danger" 
