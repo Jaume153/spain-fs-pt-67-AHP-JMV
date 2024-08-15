@@ -152,6 +152,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			register: async(firstName, lastname, email, password) => {
+				console.log("1");
+				
 				try{
 					let response = await fetch (`${process.env.BACKEND_URL}api/register`, {
 						method: "POST",
@@ -166,8 +168,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 							"role": "customer"
 						})
 					})
+					console.log("2");
+
 
 					const data = await response.json()
+					console.log(data);
+
 					if (!data.msg){
 						localStorage.setItem("token", data.access_token)
 						return true
