@@ -11,7 +11,11 @@ export const Home = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		actions.getPizzas();
+        async function fetchData() {
+            await Promise.all([actions.getPizzas(),  actions.getOrder(localStorage.getItem("token"))])
+            await actions.loadCart(localStorage.getItem("token"));
+        }
+        fetchData()
 	}, []);
 
 
@@ -20,14 +24,7 @@ export const Home = () => {
 	};
 
 	const handleAddToCart = (pizza) => {
-		actions.addToCart(pizza)
-		.then((result) => {
-			console.log("Pizza añadida:", result);
-			navigate("/cart");
-		})
-		.catch((error) => {
-			console.log("Error al añadir la pizza:", error);
-		});
+		actions.addToCart(pizza.id, localStorage.getItem("token"))
 	};
 
 	
@@ -38,14 +35,10 @@ export const Home = () => {
         groupedClassicPizzas.push(store.pizzaTypes.classic.slice(i, i + pizzasPerSlide));
     }
 
-	console.log("Grouped Classic Pizzas:", groupedClassicPizzas);
-
 	const groupedDeluxePizzas = [];
     for (let i = 0; i < store.pizzaTypes.deluxe.length; i += pizzasPerSlide) {
         groupedDeluxePizzas.push(store.pizzaTypes.deluxe.slice(i, i + pizzasPerSlide));
     }
-
-	console.log("Grouped Deluxe Pizzas:", groupedDeluxePizzas);
 	
 
 	return (
@@ -61,7 +54,7 @@ export const Home = () => {
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                         <button className="btn btn-primary ms-2" onClick={handleSearch}>Go</button>
-                        <button className="btn btn-outline-dark ms-2" onClick={handleAddToCart}>
+                        <button className="btn btn-outline-dark ms-2" onClick={(e)=> {navigate("/cart")}}>
                             <FontAwesomeIcon icon={faShoppingCart} />
                         </button>
                     </div>

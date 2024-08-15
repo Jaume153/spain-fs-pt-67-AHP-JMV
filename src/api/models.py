@@ -100,7 +100,8 @@ class Pizza(db.Model):
             'name' : self.name,
             'description' : self.description,
             'url': self.url,
-            'pizza_type': self.pizza_type.value
+            'pizza_type': self.pizza_type.value,
+            'price': self.price
         }
 class Ingredient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
