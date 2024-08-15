@@ -300,39 +300,36 @@ def new_order_item():
     if not request_body:
         return jsonify({"msg": "Not found"}), 404
 
-    order_item_id = request_body.get("id")
     order_id = request_body.get("order_id")
     pizza_id = request_body.get("pizza_id")
 
-    if not all([order_item_id, order_id, pizza_id]):
+    if not all([order_id, pizza_id]):
         return jsonify({"msg": "Missing fields"}), 400
 
-    if OrderItems.query.filter_by(id=order_item_id).first():
-        return jsonify({"msg": "Duplicated order item"}), 409
-
     order_item = OrderItems()
-
     order_item.new_pizzas_order(
-        id=order_item_id,
         order_id=order_id,
         pizza_id=pizza_id
     )
     db.session.add(order_item)
-    db.session.commit()
-
-    return jsonify({"msg": "Order item created", "order_item": order_item.serialize()}),
+    db.session.commit()  
+    response_body = {
+        "message" : "Order item created!",
+        "data": Pizza.query.filter_by(id=pizza_id).first().serialize()
+    }
+    return jsonify(response_body), 200
     
-@api.route('/orderitems/<int:order_item_id>', methods=['GET'])
+@api.route('/orderitems/<int:in_order_id>', methods=['GET'])
 @jwt_required()
-def get_order_item(order_item_id):
-    order_item = OrderItems.query.get(order_item_id)
-    if order_item is None:
-        return jsonify({"msg": "Order item not found"}), 404
-
-    order_item_info = order_item.serialize()
+def get_order_items(in_order_id):
+    order_items = OrderItems.query.filter_by(order_id=in_order_id)
+    if order_items is None:
+        return jsonify({"msg": "No items in this order"}), 404
+    pizza_info = list(map(lambda item:Pizza.query.filter_by(id=item.pizza_id).first().serialize(), order_items))
+    print(pizza_info)
     response_body = {
         "message": "ok!",
-        "data": order_item_info
+        "data": pizza_info
     }
 
     return jsonify(response_body), 200

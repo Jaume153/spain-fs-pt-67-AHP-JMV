@@ -19,16 +19,16 @@ export const Checkout = () => {
                             {store.cart.map((item, index) => (
                                 <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h5 className="mb-1">{item.pizza.name}</h5>
-                                        <p className="mb-1">{item.pizza.description}</p>
+                                        <h5 className="mb-1">{item.name}</h5>
+                                        <p className="mb-1">{item.description}</p>
                                     </div>
-                                    <span className="text-muted">${item.pizza.price.toFixed(2)}</span>
+                                    <span className="text-muted">${item.price.toFixed(2)}</span>
                                 </li>
                             ))}
                         </ul>
                         <div className="d-flex justify-content-between">
                             <h4>Total:</h4>
-                            <h4>${store.cart.reduce((acc, item) => acc + item.pizza.price, 0).toFixed(2)}</h4>
+                            <h4>${store.cart.reduce((acc, item) => acc + item.price, 0).toFixed(2)}</h4>
                         </div>
                     </div>
     
