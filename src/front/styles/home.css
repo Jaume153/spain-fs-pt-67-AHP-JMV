@@ -22,16 +22,19 @@ body {
 }
 
 .login {
-    width: 300px;
+    width: 400px;
     border: 3px solid rgb(211, 134, 18);
     -webkit-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.75);
     -moz-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.75);
     box-shadow: 0px 3px 5px 0px rgba(130, 93, 34, 0.966);
     border-radius: 20px;
     background-color: rgba(240, 248, 255, 0.432);
+    overflow: hidden;
+    padding: 20px;
 }
 .btn-beige{
     background-color: rgb(209, 190, 150);
+    margin-top: 15px;
 }
 
 .divider{
@@ -58,6 +61,75 @@ body {
     z-index: 1;
 }
 
+.file-name {
+    display: block;
+    margin-top: 5px;
+    font-size: 14px;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.dashboard-title {
+    font-size: 40px;
+    font-weight: bold;
+    color:  rgb(158,139,101);
+    text-decoration-line: underline;
+    
+}
+
+input[type="text"], select, .btn-beige {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    box-sizing: border-box; 
+}
+
+input[type="file"] {
+    margin-bottom: 10px; 
+}
+
+
+
+.header-img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    padding: 50px;
+}
+
+.checkout-title {
+    font-size: 40px;
+    font-weight: bold;
+    color: rgb(158,139,101);
+    text-decoration-line: underline;
+}
+
+.checkout-card {
+    width: 500px;
+    border: 3px solid rgb(211, 134, 18);
+    box-shadow: 0px 3px 5px 0px rgba(130, 93, 34, 0.966);
+    border-radius: 20px;
+    background-color: rgba(240, 248, 255, 0.432);
+    padding: 20px;
+}
+
+.payment-logo {
+    height: 40px;
+    width: auto;
+}
+
+.payment-text-group .form-check-label {
+    font-weight: bold;
+    color: rgb(158,139,101);
+}
+
+.choose-payment-method{
+
+    margin-bottom: 20px;
+}
 
 
 
