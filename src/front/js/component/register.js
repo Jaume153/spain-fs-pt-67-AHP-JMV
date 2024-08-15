@@ -15,7 +15,7 @@ export const Register  = () => {
     const handleLogin = async(e) => {
         e.preventDefault()
         const registered = await actions.register(firstname, lastname, email, password)
-        // const order = await actions.order()
+        await actions.getOrder(localStorage.getItem("token"))
         if (registered == true){
             navigate("/home")
         }
