@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaypal, faGooglePay, faShopify, faCcVisa, faMoneyBillAlt } from '@fortawesome/free-brands-svg-icons';
 
 export const Checkout = () => {
     const { store } = useContext(Context);
@@ -19,8 +21,8 @@ export const Checkout = () => {
                             {store.cart.map((item, index) => (
                                 <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h5 className="mb-1">{item.name}</h5>
-                                        <p className="mb-1">{item.description}</p>
+                                        <p className="mb-1">{item.url}</p>
+                                        <h5 className="mb-1">{item.name}</h5>                                       
                                     </div>
                                     <span className="text-muted">${item.price.toFixed(2)}</span>
                                 </li>
@@ -60,19 +62,19 @@ export const Checkout = () => {
                             <div className="form-check">
                                 <input className="form-check-input" type="radio" name="paymentMethod" id="googlePay" />
                                 <label className="form-check-label" htmlFor="googlePay">
-                                    <img src="google-pay-logo-url" alt="Google Pay" className="payment-logo" />
+                                    <FontAwesomeIcon icon={faGooglePay} /> 
                                 </label>
                             </div>
                             <div className="form-check">
                                 <input className="form-check-input" type="radio" name="paymentMethod" id="shopPay" />
                                 <label className="form-check-label" htmlFor="shopPay">
-                                    <img src="shop-pay-logo-url" alt="Shop Pay" className="payment-logo" />
+                                    <FontAwesomeIcon icon={faShopify} /> 
                                 </label>
                             </div>
                             <div className="form-check">
                                 <input className="form-check-input" type="radio" name="paymentMethod" id="paypal" />
                                 <label className="form-check-label" htmlFor="paypal">
-                                    <img src="paypal-logo-url" alt="PayPal" className="payment-logo" />
+                                    <FontAwesomeIcon icon={faPaypal} /> 
                                 </label>
                             </div>
                         </div>
