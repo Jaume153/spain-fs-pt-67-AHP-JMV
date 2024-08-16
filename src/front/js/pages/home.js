@@ -67,7 +67,7 @@ export const Home = () => {
                                     </label>
                                 </div>
                             ))}
-                            <input type="submit"></input>
+                            <input type="submit" className="btn btn-beige"></input>
                         </form>
                     </div>
                     <div className="col-lg-9">

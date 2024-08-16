@@ -17,7 +17,7 @@ export const Navbar = () => {
 	return (
         <nav className="navbar navbar-light bg-light">
             <div className="container">
-                <Link to="/">
+                <Link to="/home">
                     <img className="logo" src='https://res.cloudinary.com/didd1mjsp/image/upload/v1723140966/Untitled-2_n4lggj.png' alt="Logo" />
                 </Link>
                 <div className="ml-auto d-flex align-items-center">
