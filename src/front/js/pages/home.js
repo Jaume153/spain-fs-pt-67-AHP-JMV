@@ -6,8 +6,7 @@ import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import "../../styles/home.css";
 
 export const Home = () => {
-    const { store, actions } = useContext(Context);
-    const [searchTerm, setSearchTerm] = useState("");
+    const { store, actions } = useContext(Context);   
     const navigate = useNavigate();
 
     useEffect(() => {
