@@ -128,10 +128,15 @@ class PizzaIngredient(db.Model):
     def __repr__(self):
         return '<PizzaIngredient %r>' % self.id
         
+    def new_relation(self, pizza_id, ingredient_id):
+        self.pizza_id = pizza_id,        
+        self.ingredient_id = ingredient_id,
+        db.session.add(self)
+        db.session.commit()
+
     def serialize(self):
         return {
             'id': self.id,
-            'name': self.name,
             'pizza_id': self.pizza_id,
             'ingredient_id': self.ingredient_id
         }

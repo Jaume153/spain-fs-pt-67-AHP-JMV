@@ -24,9 +24,23 @@ const getState = ({ getStore, getActions, setStore }) => {
                 deluxe: []
             },
 
+			ingredients: [],
+
 			cart: []
 		},
 		actions: {
+			getIngredients: async() => {
+				try {
+					const resp = await fetch(`${process.env.BACKEND_URL}api/ingredients`)
+					const data = await resp.json()
+					setStore({ingredients: data.data})
+					console.log(getStore().ingredients)
+					return
+				} catch (error) {
+					return ("Error loading message from backend", error)
+				}
+			},
+			
 			getMessage: async () => {
 				try{
 					return
@@ -35,11 +49,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			getPizzas: async () => {
+			getPizzas: async (list) => {
 				try{
-					const resp = await fetch(`${process.env.BACKEND_URL}api/pizzas`)
+					const resp = await fetch(`${process.env.BACKEND_URL}api/pizzas`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify({
+							ingredients: list
+						})
+					})
+					
 					const data = await resp.json()
-
+					
 					const classicPizzas = data.data.filter(pizza => pizza.pizza_type === "Classic");
                     const deluxePizzas = data.data.filter(pizza => pizza.pizza_type === "Deluxe");
 
@@ -69,8 +92,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 					const data = await resp.json();
 					setStore({cart: data.data });
-					console.log(getStore().pizzas)
-					console.log(getStore().cart)
 
                     
                 } catch (error) {
@@ -152,7 +173,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			register: async(firstName, lastname, email, password) => {
-				console.log("1");
 				
 				try{
 					let response = await fetch (`${process.env.BACKEND_URL}api/register`, {
@@ -168,11 +188,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 							"role": "customer"
 						})
 					})
-					console.log("2");
 
 
 					const data = await response.json()
-					console.log(data);
 
 					if (!data.msg){
 						localStorage.setItem("token", data.access_token)

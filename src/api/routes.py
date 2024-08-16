@@ -165,17 +165,56 @@ def resetPassword():
     db.session.commit()
     return jsonify({"msg": "Good"}) , 200
 
-@api.route('/pizzas', methods = ['GET'])
+@api.route('/pizzas', methods = ['POST'])
 def get_pizzas(): 
-    pizzas = Pizza.query.all()
-    pizzas_serialized = list(map(lambda item:item.serialize(), pizzas))
-    response_body = {
-        "message" : "Nice pizzas!",
-        "data": pizzas_serialized
-    }
-    if (pizzas == []):
-        return jsonify({"msg": "Not pizzas yet"}), 404
-    return jsonify(response_body), 200
+    request_body = request.get_json()
+    print(request_body)
+    if request_body == {} or request_body["ingredients"] == []:
+        pizzas = Pizza.query.all()
+        pizzas_serialized = list(map(lambda item:item.serialize(), pizzas))
+        response_body = {
+            "message" : "Nice pizzas!",
+            "data": pizzas_serialized
+        }
+        if (pizzas == []):
+            return jsonify({"msg": "Not pizzas yet"}), 404
+        return jsonify(response_body), 200
+    else:
+        pizzas = Pizza.query.all()
+        pizzas_serialized = list(map(lambda item:item.serialize(), pizzas))
+        ingredients = request_body["ingredients"]
+        pizzaRelation = PizzaIngredient.query.all()
+        pizzasRelation_serialized = list(map(lambda item:item.serialize(), pizzaRelation))
+        final = []
+        for ingredient in ingredients:
+            result = list(filter(lambda obj: obj['ingredient_id'] == int(ingredient), pizzasRelation_serialized))
+            final.extend(result)
+
+        pizza_count = {}
+        for pizza in final:
+            pizza_id = pizza['pizza_id']
+            if pizza_id in pizza_count:
+                pizza_count[pizza_id] += 1
+            else:
+                pizza_count[pizza_id] = 1
+
+        somaething= []
+        for pizza_id_final, times in pizza_count.items():
+            print(times == len(ingredients))
+            if times == len(ingredients):
+                somaething.append(pizza_id_final)
+
+        data = []
+        for pizz_id in somaething:
+            result2 = list(filter(lambda obj: obj['id'] == pizz_id, pizzas_serialized))
+            data.extend(result2) 
+
+        print (data)
+                   
+        return jsonify({
+            "message" : "Nice pizzas!",
+            "data": data
+        }), 200
 
 @api.route('/pizzas', methods=['POST'])    
 def add_pizza():
@@ -255,7 +294,6 @@ def new_order():
     user_id = jtw_data["user_id"]
     if Order.query.filter_by(id=user_id).first():
         return jsonify({"msg": "Duplicated order"}), 409
-    print(user_id)
     order = Order()
     order.new_order(
         status= request_body["status"],
@@ -326,7 +364,6 @@ def get_order_items(in_order_id):
     if order_items is None:
         return jsonify({"msg": "No items in this order"}), 404
     pizza_info = list(map(lambda item:Pizza.query.filter_by(id=item.pizza_id).first().serialize(), order_items))
-    print(pizza_info)
     response_body = {
         "message": "ok!",
         "data": pizza_info
@@ -346,7 +383,6 @@ def delete_order_item(order_item_id):
         return jsonify({"msg": "Order item doesn't exist"}), 404
 
 @api.route('/ingredients', methods = ['GET'])
-@jwt_required()
 def get_ingredients(): 
     ingredients = Ingredient.query.all()
     ingredients_serialized = list(map(lambda item:item.serialize(), ingredients))
@@ -354,7 +390,7 @@ def get_ingredients():
         "message" : "ok!",
         "data": ingredients_serialized
     }
-    if (get_orders == []):
+    if (get_ingredients == []):
         return jsonify({"msg": "Any ingredients yet"}), 404
     return jsonify(response_body), 200
 
@@ -362,7 +398,7 @@ def get_ingredients():
 @jwt_required()
 def new_ingredient():
     request_body = request.get_json()
-    if Ingredient.query.filter_by(id=request_body["id"]).first():
+    if Ingredient.query.filter_by(name=request_body["name"]).first():
         return jsonify({"msg": "Duplicated ingredient"}), 409
     jtw_data = get_jwt()
     user_role = jtw_data["user_role"]
@@ -376,3 +412,29 @@ def new_ingredient():
         db.session.commit()
 
     return jsonify({"msg": "Ingredient created", "ingredient": ingredients.serialize()}), 201
+
+@api.route('/pizzaingredients', methods = ['GET'])
+def get_pizzaingredient(): 
+    pizzaingredient = PizzaIngredient.query.all()
+    pizzaingredient_serialized = list(map(lambda item:item.serialize(), pizzaingredient))
+    response_body = {
+        "message" : "ok!",
+        "data": pizzaingredient_serialized
+    }
+    if (get_ingredients == []):
+        return jsonify({"msg": "Any pizzaingredient"}), 404
+    return jsonify(response_body), 200
+
+
+@api.route('/pizzaingredient', methods = ['POST'])
+def add_pizzaingredient(): 
+    request_body = request.get_json()
+    pizzaIngredient = PizzaIngredient()
+    pizzaIngredient.new_relation(
+        ingredient_id = request_body.get("ingredient_id"),
+        pizza_id = request_body.get("pizza_id")
+    )
+    db.session.add(pizzaIngredient)
+    db.session.commit()
+
+    return jsonify({"msg": "Ingredient created"}), 201
