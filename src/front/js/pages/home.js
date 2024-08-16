@@ -12,7 +12,7 @@ export const Home = () => {
 
     useEffect(() => {
         async function fetchData() {
-            await Promise.all([actions.getPizzas(), actions.getOrder(localStorage.getItem("token"))])
+            await Promise.all([actions.getPizzas(),  actions.getOrder(localStorage.getItem("token"), actions.getIngredients())])
             await actions.loadCart(localStorage.getItem("token"));
 
         }
@@ -21,15 +21,21 @@ export const Home = () => {
 
 
 
-    const handleAddToCart = (pizza) => {
-        actions.addToCart(pizza.id, localStorage.getItem("token"))
-    };
-
-
-    const ingredients = ["Aceitunas", "Champiñones", "Pepperoni", "Pollo", "Pulled Pork"];
-
-
-    const pizzasPerSlide = 4;
+	const handleAddToCart = (pizza) => {
+		actions.addToCart(pizza.id, localStorage.getItem("token"))
+	};
+	
+    const sendList = (e) => {
+        let list = []
+        e.preventDefault()
+        let markedCheckbox = document.getElementsByName('ingredient');  
+        for (let checkbox of markedCheckbox) {  
+            if (checkbox.checked)  
+            list.push(checkbox.value);  
+        }    
+        actions.getPizzas(list)
+    }
+	const pizzasPerSlide = 4;
 
     const groupedClassicPizzas = [];
     for (let i = 0; i < store.pizzaTypes.classic.length; i += pizzasPerSlide) {
@@ -40,29 +46,29 @@ export const Home = () => {
     for (let i = 0; i < store.pizzaTypes.deluxe.length; i += pizzasPerSlide) {
         groupedDeluxePizzas.push(store.pizzaTypes.deluxe.slice(i, i + pizzasPerSlide));
     }
-
-
-    return (
-        <div className="mt-5">
+    console.log(store.ingredients) //Preguntar perque 5 vegades
+	return (
+        <div className="text-center mt-5">
             <div className="container">
                 <div className="row">
                     <div className="col-lg-3 mb-3">
-                        <div className="ingredient-card">
+                        <form className="ingredient-card"  onSubmit={sendList}>
                             <h5>Filtrar por Ingredientes</h5>
-                            {ingredients.map((ingredient, index) => (
+                            {store?.ingredients?.map((ingredient, index) => (
                                 <div className="form-check" key={index}>
                                     <input
                                         className="form-check-input"
                                         type="checkbox"
-                                        value={ingredient}
-                                        id={`ingredient-${index}`}
+                                        value={ingredient.id}
+                                        name="ingredient"
                                     />
                                     <label className="form-check-label" htmlFor={`ingredient-${index}`}>
-                                        {ingredient}
+                                        {ingredient.name}
                                     </label>
                                 </div>
                             ))}
-                        </div>
+                            <input type="submit"></input>
+                        </form>
                     </div>
                     <div className="col-lg-9">
                         <section className="cabecera-carrusel1 text-center mb-4">
