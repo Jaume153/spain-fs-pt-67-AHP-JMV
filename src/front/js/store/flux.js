@@ -91,13 +91,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return console.log("Not logged in")
 				}
                 try {                      
-					const resp = await fetch(`${process.env.BACKEND_URL}api/orderitems/${getStore().order.id}`, {
+					const resp = await fetch(`${process.env.BACKEND_URL}api/orderitems/orderID/${getStore().order.id}`, {
 						method: "GET",
 						headers: {
 							'Authorization': 'Bearer ' + token 
 						}
 					});
-					const data = await resp.json();
+					const data = await resp.json();					
 					setStore({cart: data.data });
                 } catch (error) {
                     return console.log("Error loading cart:", error);
@@ -112,7 +112,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						getActions().createOrder(token)
 					}         
 
-					const itemResp = await fetch(`${process.env.BACKEND_URL}api/orderitems`, {
+					const itemResp = await fetch(`${process.env.BACKEND_URL}api/orderitems/create`, {
 						method: "POST",
 						headers: {
 							"Content-Type": "application/json",
@@ -134,9 +134,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			removeFromCart: async (orderItemId, token) => {
-				console.log(orderItemId)
                 try {
-                    const resp = await fetch(`${process.env.BACKEND_URL}/api/orderitems/${orderItemId}`, {
+                    const resp = await fetch(`${process.env.BACKEND_URL}/api/orderitems/delete/${orderItemId}`, {
                         method: "DELETE",
                         headers: {
                             "Content-Type": "application/json",
@@ -155,7 +154,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 			login: async(email, password) => {
 				try{
-					let response = await fetch (`${process.env.BACKEND_URL}api/login`, {
+					let response = await fetch (`${process.env.BACKEND_URL}api/users/login`, {
 						method: "POST",
 						headers: {
 							"Content-Type" : "application/json"
@@ -183,7 +182,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			register: async(firstName, lastname, email, password) => {
 				
 				try{
-					let response = await fetch (`${process.env.BACKEND_URL}api/register`, {
+					let response = await fetch (`${process.env.BACKEND_URL}api/users/register`, {
 						method: "POST",
 						headers: {
 							"Content-Type" : "application/json"
@@ -247,7 +246,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			createOrder: async (token) => {
 				try{
-					let response = await fetch(`${process.env.BACKEND_URL}api/orders`, {
+					let response = await fetch(`${process.env.BACKEND_URL}api/orders/create`, {
 						method: "POST",
 						headers: {
 							"Content-Type" : "application/json",
@@ -260,7 +259,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 					
 					const data = await response.json()
-					console.log(data.msg);
 					
 					if (!data.msg){
 						return data
@@ -302,7 +300,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 				try{
-					let response = await fetch (`${process.env.BACKEND_URL}api/resetPassword`, {
+					let response = await fetch (`${process.env.BACKEND_URL}api/users/resetPassword`, {
 						method: "PATCH",
 						headers: {
 							"Content-Type" : "application/json",
@@ -332,7 +330,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				formData.append('description', description)
 				formData.append('pizza_type', pizzaType)
 				try{
-					let response = await fetch (`${process.env.BACKEND_URL}api/pizzas_upload`, {
+					let response = await fetch (`${process.env.BACKEND_URL}api/pizzas/create`, {
 						method: "POST",
 						headers: {
 							'Authorization': 'Bearer ' + token 
@@ -349,7 +347,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			checkout: async(token) => {
 				
 				try {
-					let response = await fetch (`${process.env.BACKEND_URL}api/checkout/${getStore().order.id}`, {
+					let response = await fetch (`${process.env.BACKEND_URL}api/orders/checkout/${getStore().order.id}`, {
 						method: "PATCH",
 						headers: {
 							"Content-Type" : "application/json",
@@ -361,7 +359,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 					
 					const data = await response.json()
-					console.log(data);
 					if (data){
 						alert(data.msg)
 						return data.msg

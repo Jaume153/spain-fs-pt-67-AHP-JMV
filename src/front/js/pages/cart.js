@@ -8,6 +8,7 @@ export const Cart = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
 
+    const [cartItems, setCartItems] = useState([]);
     useEffect(() => {
         async function fetchData() {
             await actions.getOrder(localStorage.getItem("token"));
@@ -16,6 +17,10 @@ export const Cart = () => {
         fetchData()
 	}, []);
 
+    const handleAddToCart = (pizza) => {
+		actions.addToCart(pizza.id, localStorage.getItem("token"))
+        setCartItems()
+	};
 
     const handleRemoveFromCart = async(orderItemId) => {
         const removed  = await actions.removeFromCart(orderItemId, localStorage.getItem("token"));
@@ -35,7 +40,13 @@ export const Cart = () => {
                         <div className='me-auto'>
                             <h5>{item.name}</h5>
                             <p>{item.description}</p>
-                            <span>Price: ${item.price}</span>
+                            <span>Price: ${item.price * item.quantity}</span>
+                            <div className='d-flex'>
+                                <button className='btn btn-primary' >-</button>
+                                <div className="">Quantity: {item.quantity}</div>
+                                <button className='btn btn-primary' onClick={() => handleAddToCart(item)}>+</button>
+                            </div>
+
                         </div>
                         <button 
                             className="btn btn-danger" 
