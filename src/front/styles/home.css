@@ -11,6 +11,7 @@
 
 body {
     background-color: rgb(198, 183, 153);
+    font-family: "Roboto", sans-serif;
 }
 
 .login {
@@ -143,8 +144,7 @@ input[type="file"] {
 }
 
 .carousel {
-    width: 1000px;
-    margin-left: 100px; 
+    width: 100%;
 }
 
 .pizza-img {
@@ -198,4 +198,15 @@ input[type="file"] {
     align-content: center; 
     justify-content: center;
     flex-direction: column
+}
+
+.carousel-height{
+    height: 250px;
+    align-items: center;
+}
+
+.cart-item{
+    background-color: rgba(255, 228, 196, 0.563);
+    padding-right: 50px;
+    border-radius: 30px;
 }

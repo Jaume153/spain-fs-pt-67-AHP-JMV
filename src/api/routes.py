@@ -85,7 +85,7 @@ def login():
         }
         
         access_token = create_access_token(identity=users_query.id, additional_claims=additional_claims, expires_delta=False)
-        return jsonify(access_token=access_token), 200
+        return jsonify(access_token=access_token, users= users_query.serialize()), 200
     return jsonify({"msg": "Bad email or password"}), 401
 
 
@@ -168,7 +168,6 @@ def resetPassword():
 @api.route('/pizzas', methods = ['POST'])
 def get_pizzas(): 
     request_body = request.get_json()
-    print(request_body)
     if request_body == {} or request_body["ingredients"] == []:
         pizzas = Pizza.query.all()
         pizzas_serialized = list(map(lambda item:item.serialize(), pizzas))
@@ -200,7 +199,6 @@ def get_pizzas():
 
         somaething= []
         for pizza_id_final, times in pizza_count.items():
-            print(times == len(ingredients))
             if times == len(ingredients):
                 somaething.append(pizza_id_final)
 
@@ -208,8 +206,6 @@ def get_pizzas():
         for pizz_id in somaething:
             result2 = list(filter(lambda obj: obj['id'] == pizz_id, pizzas_serialized))
             data.extend(result2) 
-
-        print (data)
                    
         return jsonify({
             "message" : "Nice pizzas!",
@@ -292,7 +288,7 @@ def new_order():
     request_body = request.get_json()
     jtw_data = get_jwt()
     user_id = jtw_data["user_id"]
-    if Order.query.filter_by(id=user_id).first():
+    if Order.query.filter_by(user_id=user_id,  status="pending").first():
         return jsonify({"msg": "Duplicated order"}), 409
     order = Order()
     order.new_order(
@@ -360,10 +356,20 @@ def new_order_item():
 @api.route('/orderitems/<int:in_order_id>', methods=['GET'])
 @jwt_required()
 def get_order_items(in_order_id):
+    if not in_order_id:
+        return jsonify ({"msg": "Not logged in"}), 400
     order_items = OrderItems.query.filter_by(order_id=in_order_id)
     if order_items is None:
         return jsonify({"msg": "No items in this order"}), 404
-    pizza_info = list(map(lambda item:Pizza.query.filter_by(id=item.pizza_id).first().serialize(), order_items))
+    pizza_infoo = list(map(lambda item:item.serialize(), order_items))
+    pizza_info = list(map(lambda item:{**Pizza.query.filter_by(id=item.pizza_id).first().serialize(), 'orderItem_Id': item.id}, order_items))
+    pizza_count = {}
+    for pizza in pizza_infoo:
+        pizza_id = pizza['pizza_id']
+        if pizza_id in pizza_count:
+            pizza_count[pizza_id] += 1
+        else:
+            pizza_count[pizza_id] = 1
     response_body = {
         "message": "ok!",
         "data": pizza_info
@@ -431,7 +437,6 @@ def get_pizzaingredient():
 def add_pizzaingredient(): 
     jtw_data = get_jwt()
     user_role = jtw_data["user_role"]
-    print(user_role)
     if user_role=="Admin":
         request_body = request.get_json()
         pizzaIngredient = PizzaIngredient()
@@ -444,3 +449,11 @@ def add_pizzaingredient():
 
         return jsonify({"msg": "Ingredient created"}), 201
     return jsonify({"msg": "You need to be an Admin"}), 410
+
+@api.route('/checkout/<int:order_id>', methods=['PATCH'])
+@jwt_required()
+def proceedCheckout(order_id):
+    order = Order.query.filter_by(id=order_id).first()
+    order.status = "completed"
+    db.session.commit()
+    return jsonify({"msg": "Good"}) , 200
