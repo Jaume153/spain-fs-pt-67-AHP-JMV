@@ -9,11 +9,16 @@ import { faShoppingCart } from '@fortawesome/free-solid-svg-icons'
 
 export const Navbar = () => {
 
-	const { store } = useContext(Context);
+    
+	const { store, actions } = useContext(Context);
     const navigate = useNavigate();
     const cartCount = store.cart.length;
 
-	
+    const handleLogOut = (e) => {
+        e.preventDefault()
+        actions.logOut()
+        navigate("/login")
+    }
 	return (
         <nav className="navbar navbar-light bg-light">
             <div className="container">
@@ -27,9 +32,15 @@ export const Navbar = () => {
                             {cartCount}
                         </span>
                     </button>
-                    <Link to="/login">
+                    {localStorage.getItem("user_name") &&
+                    <div>Welcome {localStorage.getItem("user_name")}</div>}
+                    {!localStorage.getItem("user_name") ?
+                        <Link to="/login">
                         <button className="btn btn-primary">Login</button>
-                    </Link>
+                        </Link> :
+                        <button className="btn btn-primary" onClick={handleLogOut}>LogOut</button>
+                    }
+                    <button className="btn btn-primary" onClick={(e)=> {console.log(store.user)}}>aaaa</button>
                 </div>
             </div>
         </nav>

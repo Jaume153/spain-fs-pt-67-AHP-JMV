@@ -9,6 +9,14 @@ export const LoginForm  = () => {
     const {actions} = useContext(Context)
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+
+    useEffect(() => {
+        async function fetchData() {
+            await actions.loadCart("nothing");
+        }
+        fetchData()
+    }, []);
+
     
     const handleLogin = async(e) => {
         e.preventDefault()

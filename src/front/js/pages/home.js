@@ -19,7 +19,8 @@ export const Home = () => {
         fetchData()
     }, []);
 
-
+    console.log(store.order);
+    
 
 	const handleAddToCart = (pizza) => {
 		actions.addToCart(pizza.id, localStorage.getItem("token"))
@@ -41,7 +42,7 @@ export const Home = () => {
     for (let i = 0; i < store.pizzaTypes.classic.length; i += pizzasPerSlide) {
         groupedClassicPizzas.push(store.pizzaTypes.classic.slice(i, i + pizzasPerSlide));
     }
-
+    console.log(groupedClassicPizzas)
     const groupedDeluxePizzas = [];
     for (let i = 0; i < store.pizzaTypes.deluxe.length; i += pizzasPerSlide) {
         groupedDeluxePizzas.push(store.pizzaTypes.deluxe.slice(i, i + pizzasPerSlide));
@@ -75,11 +76,11 @@ export const Home = () => {
                             <img src="https://www.dominospizza.es/images/02_Tier-Menu-CLAZZICAS-2022.png" alt="Clazzicas" className="header-img" />
                         </section>
 
-                        <div id="pizzaCarousel1" className="carousel slide mb-5">
+                        <div id="pizzaCarousel1" className="carousel slide">
                             <div className="carousel-inner">
                                 {groupedClassicPizzas.map((group, groupIndex) => (
                                     <div key={groupIndex} className={`carousel-item ${groupIndex === 0 ? "active" : ""}`}>
-                                        <div className="row justify-content-center">
+                                        <div className="row justify-content-center carousel-height">
                                             {group.map((pizza, index) => (
                                                 <div key={index} className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
                                                     <div className="pizza-item text-center">
@@ -116,7 +117,7 @@ export const Home = () => {
                             <div className="carousel-inner">
                                 {groupedDeluxePizzas.map((group, groupIndex) => (
                                     <div key={groupIndex} className={`carousel-item ${groupIndex === 0 ? "active" : ""}`}>
-                                        <div className="row justify-content-center">
+                                        <div className="row justify-content-center carousel-height">
                                             {group.map((pizza, index) => (
                                                 <div key={index} className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
                                                     <div className="pizza-item text-center">

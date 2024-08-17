@@ -1,7 +1,10 @@
+import { Checkout } from "../pages/checkout";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			message: null,
+			user: "",
 			pizzas: [
 				{
 					name: "",
@@ -34,7 +37,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const resp = await fetch(`${process.env.BACKEND_URL}api/ingredients`)
 					const data = await resp.json()
 					setStore({ingredients: data.data})
-					console.log(getStore().ingredients)
 					return
 				} catch (error) {
 					return ("Error loading message from backend", error)
@@ -72,6 +74,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                             deluxe: deluxePizzas
                         }
                     });
+
 					setStore( { pizzas: data.data} );
 
 					//setStore({ pizzas: data.data })
@@ -83,6 +86,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			loadCart: async (token) => {
+				if (!getStore().order.id) {
+					setStore({cart: [] })
+					return console.log("Not logged in")
+				}
                 try {                      
 					const resp = await fetch(`${process.env.BACKEND_URL}api/orderitems/${getStore().order.id}`, {
 						method: "GET",
@@ -92,10 +99,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 					const data = await resp.json();
 					setStore({cart: data.data });
-
-                    
                 } catch (error) {
-                    return ("Error loading cart:", error);
+                    return console.log("Error loading cart:", error);
                 }
             },
 
@@ -122,31 +127,32 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					setStore({ cart: [...getStore().cart, newItemData.data] });
 					
-					
 					return newItemData;
 				} catch (error) {
 					return ("Error adding to cart:", error);
 				}
 			},
 
-			// removeFromCart: async (orderItemId) => {
-            //     try {
-            //         const resp = await fetch(`${process.env.BACKEND_URL}/api/orderitems/${orderItemId}`, {
-            //             method: "DELETE",
-            //             headers: {
-            //                 "Content-Type": "application/json"
-            //             }
-            //         });
-            //         if (resp.ok) {
-            //             const store = getStore();
-            //             const updatedCart = store.cart.filter(item => item.id !== orderItemId);
-            //             setStore({ cart: updatedCart });
-            //         }
-            //     } catch (error) {
-            //         return ("Error removing item from cart:", error);
-            //     }
-            // },
-		
+			removeFromCart: async (orderItemId, token) => {
+				console.log(orderItemId)
+                try {
+                    const resp = await fetch(`${process.env.BACKEND_URL}/api/orderitems/${orderItemId}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+							'Authorization': 'Bearer ' + token 
+                        }
+                    });
+                    if (resp.ok) {
+                        const store = getStore();
+                        const updatedCart = store.cart.filter(item => item.id !== orderItemId);
+                        setStore({ cart: updatedCart });
+						return true
+                    }
+                } catch (error) {
+                    return ("Error removing item from cart:", error);
+                }
+            },
 			login: async(email, password) => {
 				try{
 					let response = await fetch (`${process.env.BACKEND_URL}api/login`, {
@@ -161,7 +167,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 					const data = await response.json()
 					if (!data.msg){
+						setStore({user: data.users})
 						localStorage.setItem("token", data.access_token);
+						localStorage.setItem("user_name", data.users.firstname);
 						return true
 					} else {
 						return data.msg
@@ -189,11 +197,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 						})
 					})
 
-
 					const data = await response.json()
 
 					if (!data.msg){
+						setStore({user: data.users})
 						localStorage.setItem("token", data.access_token)
+						localStorage.setItem("user_name", data.users.firstname);
 						return true
 					} else {
 						return data.msg
@@ -206,6 +215,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			logOut: async() => {
 				localStorage.removeItem("token");
+				localStorage.removeItem("user_name");
+				setStore({order: ""})
+				setStore({user: ""})
 			},
 			getOrder: async(token) => {
 				if (!token){
@@ -248,6 +260,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 					
 					const data = await response.json()
+					console.log(data.msg);
+					
 					if (!data.msg){
 						return data
 					} else {
@@ -303,7 +317,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						alert(data.msg)
 						return data.msg
 					}
-					alert("BB")
 
 				} catch(error) {
 					alert (error)
@@ -332,6 +345,31 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false
 				}
 			},
+
+			checkout: async(token) => {
+				
+				try {
+					let response = await fetch (`${process.env.BACKEND_URL}api/checkout/${getStore().order.id}`, {
+						method: "PATCH",
+						headers: {
+							"Content-Type" : "application/json",
+							'Authorization': 'Bearer ' + token 
+						},
+						body: JSON.stringify({
+							"status" : "completed"
+						})
+					})
+					
+					const data = await response.json()
+					console.log(data);
+					if (data){
+						alert(data.msg)
+						return data.msg
+					}
+				} catch (error) {
+					return console.log(error)
+				}
+			}
 		}
 	};
 };
