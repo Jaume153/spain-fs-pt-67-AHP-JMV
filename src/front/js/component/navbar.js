@@ -40,7 +40,6 @@ export const Navbar = () => {
                         </Link> :
                         <button className="btn btn-primary" onClick={handleLogOut}>LogOut</button>
                     }
-                    <button className="btn btn-primary" onClick={(e)=> {console.log(store.user)}}>aaaa</button>
                 </div>
             </div>
         </nav>

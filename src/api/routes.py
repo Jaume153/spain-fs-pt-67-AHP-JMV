@@ -360,14 +360,14 @@ def get_order_items(in_order_id):
     if order_items is None:
         return jsonify({"msg": "No items in this order"}), 404
     pizza_info = list(map(lambda item:{**Pizza.query.filter_by(id=item.pizza_id).first().serialize(), 'orderItem_Id': item.id}, order_items))
-    pizza_dict = {}
+    repeated_pizzas = {}
 
     for pizza in pizza_info:
         pizza_id = pizza['id']
-        if pizza_id in pizza_dict:
-            pizza_dict[pizza_id]['quantity'] += 1
+        if pizza_id in repeated_pizzas:
+            repeated_pizzas[pizza_id]['quantity'] += 1
         else:
-            pizza_dict[pizza_id] = {
+            repeated_pizzas[pizza_id] = {
                 'id': pizza['id'],
                 'name': pizza['name'],
                 'description': pizza['description'],
@@ -376,8 +376,9 @@ def get_order_items(in_order_id):
                 'price': pizza['price'],
                 'quantity': 1
             }
-
-    result = list(pizza_dict.values())
+    result = list(repeated_pizzas.values())
+    result.sort(key=lambda x: x['id'])
+    print(result)
     
     response_body = {
         "message": "ok!",
@@ -386,10 +387,13 @@ def get_order_items(in_order_id):
 
     return jsonify(response_body), 200
 
-@api.route('/orderitems/delete/<int:order_item_id>', methods=['DELETE'])
+@api.route('/orderitems/delete', methods=['POST'])
 @jwt_required()
-def delete_order_item(order_item_id):
-    order_item = OrderItems.query.get(order_item_id)
+def delete_order_item():
+    request_body = request.get_json()
+    pizza_id = request_body["pizza_id"]
+    order_id = request_body["order_id"]
+    order_item = OrderItems.query.filter_by(order_id=order_id, pizza_id=pizza_id).first()
     if order_item:
         db.session.delete(order_item)
         db.session.commit()

@@ -18,12 +18,12 @@ export const Cart = () => {
 	}, []);
 
     const handleAddToCart = (pizza) => {
-		actions.addToCart(pizza.id, localStorage.getItem("token"))
-        setCartItems()
+		const refresh = actions.addToCart(pizza.id, localStorage.getItem("token"))
+        setCartItems(refresh)
 	};
 
-    const handleRemoveFromCart = async(orderItemId) => {
-        const removed  = await actions.removeFromCart(orderItemId, localStorage.getItem("token"));
+    const handleRemoveFromCart = async(pizza_id) => {
+        const removed  = await actions.removeFromCart(pizza_id, localStorage.getItem("token"));
         if (removed){
             actions.loadCart(localStorage.getItem("token"));
         }
@@ -37,22 +37,18 @@ export const Cart = () => {
                 {store.cart.map((item, index) => (
                     <div key={index} className="cart-item d-flex align-items-center mb-4">
                         <img src={item.url} alt={item.name} className="img-fluid cart-img me-5" />
-                        <div className='me-auto'>
-                            <h5>{item.name}</h5>
-                            <p>{item.description}</p>
-                            <span>Price: ${item.price * item.quantity}</span>
-                            <div className='d-flex'>
-                                <button className='btn btn-primary' >-</button>
-                                <div className="">Quantity: {item.quantity}</div>
-                                <button className='btn btn-primary' onClick={() => handleAddToCart(item)}>+</button>
-                            </div>
-
+                        <div className='me-auto description-cart'>
+                            <h5 className='price-cart'>{item.name}</h5>
+                            <p >{item.description}</p>
+                            <span className='price-cart'>{item.price * item.quantity}$</span>
                         </div>
-                        <button 
-                            className="btn btn-danger" 
-                            onClick={() => handleRemoveFromCart(item.orderItem_Id)}>
-                            X
-                        </button>
+                        <div className='d-flex'>
+                            <div class="input-group mb-3">
+                                <button class="input-group-text" onClick={() => handleRemoveFromCart(item.id)}>-</button>
+                                <div type="text" class="form-control" aria-label="Amount (to the nearest dollar)">{item.quantity}</div>
+                                <button class="input-group-text" onClick={() => handleAddToCart(item)}>+</button>
+                            </div>
+                        </div>
                     </div>
                 ))}
             </div>

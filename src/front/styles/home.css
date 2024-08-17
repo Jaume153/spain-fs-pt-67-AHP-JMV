@@ -210,3 +210,11 @@ input[type="file"] {
     padding-right: 50px;
     border-radius: 30px;
 }
+
+.description-cart{
+    max-width: 50%;
+}
+.price-cart{
+    font-size: 30px;
+    font-weight: 800;
+}

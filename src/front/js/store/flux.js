@@ -123,9 +123,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 							pizza_id: pizza_id
 						})
 					});
-					const newItemData = await itemResp.json();
-
-					setStore({ cart: [...getStore().cart, newItemData.data] });
+					getActions().loadCart(token)
 					
 					return newItemData;
 				} catch (error) {
@@ -133,18 +131,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			removeFromCart: async (orderItemId, token) => {
+			removeFromCart: async (pizza_id, token) => {
                 try {
-                    const resp = await fetch(`${process.env.BACKEND_URL}/api/orderitems/delete/${orderItemId}`, {
-                        method: "DELETE",
+                    const resp = await fetch(`${process.env.BACKEND_URL}/api/orderitems/delete`, {
+                        method: "POST",
                         headers: {
                             "Content-Type": "application/json",
 							'Authorization': 'Bearer ' + token 
-                        }
+                        },
+						body: JSON.stringify({
+							order_id: getStore().order.id,  
+							pizza_id: pizza_id
+						})
                     });
                     if (resp.ok) {
-                        const store = getStore();
-                        const updatedCart = store.cart.filter(item => item.id !== orderItemId);
+                        const updatedCart = getStore().cart.filter(item => item.id !== orderItemId);
                         setStore({ cart: updatedCart });
 						return true
                     }
