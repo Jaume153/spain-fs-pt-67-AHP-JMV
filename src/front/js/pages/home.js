@@ -46,7 +46,7 @@ export const Home = () => {
     for (let i = 0; i < store.pizzaTypes.deluxe.length; i += pizzasPerSlide) {
         groupedDeluxePizzas.push(store.pizzaTypes.deluxe.slice(i, i + pizzasPerSlide));
     }
-    console.log(store.ingredients) //Preguntar perque 5 vegades
+    // console.log(store.ingredients) //Preguntar perque 5 vegades
 	return (
         <div className="text-center mt-5">
             <div className="container">
@@ -71,7 +71,7 @@ export const Home = () => {
                         </form>
                     </div>
                     <div className="col-lg-9">
-                        <section className="cabecera-carrusel1 text-center mb-4">
+                        <section className="cabecera-carrusel text-center mb-4">
                             <img src="https://www.dominospizza.es/images/02_Tier-Menu-CLAZZICAS-2022.png" alt="Clazzicas" className="header-img" />
                         </section>
 
@@ -85,10 +85,12 @@ export const Home = () => {
                                                     <div className="pizza-item text-center">
                                                         <img src={pizza.url} alt={pizza.name} className="img-fluid pizza-img" />
                                                         <div className="pizza-info">
-                                                            <h5>{pizza.name}</h5>
-                                                            <p>{pizza.description}</p>
+                                                            <div className="mini-details">
+                                                                <h5>{pizza.name}</h5>
+                                                                <p>{pizza.description}</p>
+                                                            </div>
+                                                            <button className="btn btn-success mt-2" onClick={() => handleAddToCart(pizza)}>Add to cart</button>
                                                         </div>
-                                                        <button className="btn btn-success mt-2" onClick={() => handleAddToCart(pizza)}>Add to cart</button>
                                                     </div>
                                                 </div>
                                             ))}
@@ -106,7 +108,7 @@ export const Home = () => {
                             </button>
                         </div>
 
-                        <section className="cabecera-carrusel2 text-center mb-4">
+                        <section className="cabecera-carrusel text-center mb-4">
                             <img src="https://www.dominospizza.es/images/02_Tier-Menu-DELUXES-2022.png" alt="Deluxes" className="header-img" />
                         </section>
 
@@ -120,10 +122,12 @@ export const Home = () => {
                                                     <div className="pizza-item text-center">
                                                         <img src={pizza.url} alt={pizza.name} className="img-fluid pizza-img" />
                                                         <div className="pizza-info">
-                                                            <h5>{pizza.name}</h5>
-                                                            <p>{pizza.description}</p>
+                                                            <div className="mini-details">
+                                                                <h5>{pizza.name}</h5>
+                                                                <p>{pizza.description}</p>
+                                                            </div>
+                                                            <button className="btn btn-success mt-2" onClick={() => handleAddToCart(pizza)}>Add to cart</button>
                                                         </div>
-                                                        <button className="btn btn-success mt-2" onClick={() => handleAddToCart(pizza)}>Add to cart</button>
                                                     </div>
                                                 </div>
                                             ))}

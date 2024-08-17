@@ -66,8 +66,8 @@ def delete_user(user_id):
 
 @api.route('/login', methods=['POST'])
 def login():
-    password = request.json.get('password', None)
-    email = request.json.get('email', None)
+    password = request.json.get('password')
+    email = request.json.get('email')
     users_query = User.query.filter_by(email=email).first()
     is_valid = check_password_hash(users_query.password, password)
 
@@ -84,7 +84,7 @@ def login():
             "user_role" : users_query.role.value
         }
         
-        access_token = create_access_token(identity=users_query.id, additional_claims=additional_claims)
+        access_token = create_access_token(identity=users_query.id, additional_claims=additional_claims, expires_delta=False)
         return jsonify(access_token=access_token), 200
     return jsonify({"msg": "Bad email or password"}), 401
 
@@ -110,7 +110,7 @@ def register():
         "role" : user.role.value
     }
 
-    access_token = create_access_token(identity=request_body["email"], additional_claims=additional_claims)
+    access_token = create_access_token(identity=request_body["email"], additional_claims=additional_claims, expires_delta=False)
     return jsonify(access_token=access_token), 200
 
 @api.route('/requestResetPassword', methods=['POST'])
@@ -216,7 +216,7 @@ def get_pizzas():
             "data": data
         }), 200
 
-@api.route('/pizzas', methods=['POST'])    
+@api.route('/pizzas_upload', methods=['POST'])    
 def add_pizza():
     file = request.files['file']
     if file.filename == '':
@@ -427,14 +427,20 @@ def get_pizzaingredient():
 
 
 @api.route('/pizzaingredient', methods = ['POST'])
+@jwt_required()
 def add_pizzaingredient(): 
-    request_body = request.get_json()
-    pizzaIngredient = PizzaIngredient()
-    pizzaIngredient.new_relation(
-        ingredient_id = request_body.get("ingredient_id"),
-        pizza_id = request_body.get("pizza_id")
-    )
-    db.session.add(pizzaIngredient)
-    db.session.commit()
+    jtw_data = get_jwt()
+    user_role = jtw_data["user_role"]
+    print(user_role)
+    if user_role=="Admin":
+        request_body = request.get_json()
+        pizzaIngredient = PizzaIngredient()
+        pizzaIngredient.new_relation(
+            ingredient_id = request_body.get("ingredient_id"),
+            pizza_id = request_body.get("pizza_id")
+        )
+        db.session.add(pizzaIngredient)
+        db.session.commit()
 
-    return jsonify({"msg": "Ingredient created"}), 201
+        return jsonify({"msg": "Ingredient created"}), 201
+    return jsonify({"msg": "You need to be an Admin"}), 410

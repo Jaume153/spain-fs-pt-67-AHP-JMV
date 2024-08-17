@@ -1,13 +1,5 @@
-/*
-    home.css: This website contains selectors only used in home.css
-
-    All pages share the styles on index.css but you should create 
-    one more css for each page that will contain the selected used 
-    on that page only (the ones not reused in other pages).
-*/
 .logo {
     width: 300px;
-    
 }
 
 .navbar {
@@ -32,9 +24,9 @@ body {
     overflow: hidden;
     padding: 20px;
 }
+
 .btn-beige{
     background-color: rgb(209, 190, 150);
-    margin-top: 15px;
 }
 
 .divider{
@@ -77,7 +69,6 @@ body {
     font-weight: bold;
     color:  rgb(158,139,101);
     text-decoration-line: underline;
-    
 }
 
 input[type="text"], select, .btn-beige {
@@ -89,15 +80,6 @@ input[type="text"], select, .btn-beige {
 
 input[type="file"] {
     margin-bottom: 10px; 
-}
-
-
-
-.header-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    padding: 50px;
 }
 
 .checkout-title {
@@ -127,7 +109,6 @@ input[type="file"] {
 }
 
 .choose-payment-method{
-
     margin-bottom: 20px;
 }
 
@@ -157,63 +138,19 @@ input[type="file"] {
     font-weight: bold;
 }
 
-.header-img {
-    max-width: 120%; 
-    height: auto;
-    display: block;
-    margin-right: 0; 
-
-    
-}
-
-.cabecera-carrusel1,
-.cabecera-carrusel2 {
-    text-align: right; 
+.cabecera-carrusel {
+    overflow: hidden;
 }
 
 .carousel {
     width: 1000px;
     margin-left: 100px; 
-
-
 }
-
-.ingredient-card {
-    width: 100%;
-    border: 3px solid rgb(211, 134, 18);
-    box-shadow: 0px 3px 5px 0px rgba(130, 93, 34, 0.966);
-    border-radius: 20px;
-    background-color: rgba(240, 248, 255, 0.432);
-    padding: 20px;
-    margin-bottom: 20px;
-    margin-left: -150px;
-}
-
-.ingredient-card h5 {
-    color: rgb(158,139,101);
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-
-.ingredient-card .form-check-input {
-    margin-right: 10px;
-}
-
-.ingredient-card .form-check-label {
-    color: rgb(158,139,101);
-    font-weight: bold;
-}
-
 
 .pizza-img {
     max-width: 90%; 
     height: auto;
 }
-
-.pizza-item {
-    margin: 10px;
-}
-
 
 .carousel-inner .row {
     margin-left: 0;
@@ -224,12 +161,15 @@ input[type="file"] {
     width: 5%;
 }
 
-
 .pizza-item {
     position: relative; 
 }
 
 .pizza-item .pizza-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
     opacity: 0; 
     visibility: hidden; 
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
@@ -238,7 +178,7 @@ input[type="file"] {
     left: 50%;
     transform: translate(-50%, -50%); 
     text-align: center;
-    width: 80%; 
+    width: 100%; 
     background-color: rgba(198, 183, 153, 0.8); 
     color: white; 
     padding: 5px;
@@ -247,22 +187,15 @@ input[type="file"] {
     font-size: 0.9rem; 
 }
 
-.pizza-item .btn-success {
-    opacity: 0; 
-    visibility: hidden;
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-    position: absolute;
-    bottom: 10px; 
-    left: 50%;
-    transform: translateX(-50%); 
-    z-index: 10; 
-    font-size: 0.8rem; 
-    padding: 5px 10px; 
-}
-
-
 .pizza-item:hover .pizza-info,
 .pizza-item:hover .btn-success {
     opacity: 1; 
     visibility: visible; 
+}
+
+.mini-details{
+    display: flex; 
+    align-content: center; 
+    justify-content: center;
+    flex-direction: column
 }
