@@ -15,7 +15,6 @@ export const Register  = () => {
     const handleLogin = async(e) => {
         e.preventDefault()
         const registered = await actions.register(firstname, lastname, email, password)
-        await actions.getOrder(localStorage.getItem("token"))
         if (registered == true){
             navigate("/home")
         }
@@ -24,23 +23,12 @@ export const Register  = () => {
     return (
         <form onSubmit={handleLogin} className="container justify-content-center d-flex h-100 align-items-center">
             <div className="login p-4 mt-5">
-                <div className="mb-3">
-                    <label htmlFor="exampleInputEmail1" className="form-label">FirstName</label>
-                    <input type="text" className="form-control" id="firstName" aria-describedby="nameHelp" onChange={(e)=> {setFirstname(e.target.value)}}/>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="exampleInputEmail1" className="form-label">Lastname</label>
-                    <input type="text" className="form-control" id="lastName" aria-describedby="nameHelp" onChange={(e)=> {setLastname(e.target.value)}}/>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
-                    <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" onChange={(e)=> {setEmail(e.target.value)}}/>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
-                    <input type="password" className="form-control" id="exampleInputPassword1" onChange={(e)=> {setPassword(e.target.value)}}/>
-                </div>
-                <button type="submit" className="btn btn-primary">Submit</button>
+                    <span className="h4">Register here:</span>
+                    <input type="text" placeholder="Name" className="form-control mb-3 mt-4" id="firstName" aria-describedby="nameHelp" onChange={(e)=> {setFirstname(e.target.value)}}/>
+                    <input type="text" placeholder="Last Name"className="form-control mb-3" id="lastName" aria-describedby="nameHelp" onChange={(e)=> {setLastname(e.target.value)}}/>
+                    <input type="email" placeholder="Email"className="form-control mb-3" id="exampleInputEmail1" aria-describedby="emailHelp" onChange={(e)=> {setEmail(e.target.value)}}/>
+                    <input type="password" placeholder="Password"className="form-control mb-3" id="exampleInputPassword1" onChange={(e)=> {setPassword(e.target.value)}}/>
+                <button type="submit" className="btn btn-beige">Submit</button>
             </div>
         </form>
     )

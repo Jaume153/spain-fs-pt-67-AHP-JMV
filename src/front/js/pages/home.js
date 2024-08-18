@@ -14,16 +14,18 @@ export const Home = () => {
         async function fetchData() {
             await Promise.all([actions.getPizzas(),  actions.getOrder(localStorage.getItem("token"), actions.getIngredients())])
             await actions.loadCart(localStorage.getItem("token"));
-
+            console.log(store.cart);
+            
         }
         fetchData()
     }, []);
 
-    console.log(store.order);
-    
-
 	const handleAddToCart = (pizza) => {
-		actions.addToCart(pizza.id, localStorage.getItem("token"))
+        if (!localStorage.getItem("token")){
+            navigate("/login")
+        } else {
+            actions.addToCart(pizza.id, localStorage.getItem("token"))
+        }
 	};
 	
     const sendList = (e) => {
@@ -34,6 +36,7 @@ export const Home = () => {
             if (checkbox.checked)  
             list.push(checkbox.value);  
         }    
+        console.log(list)
         actions.getPizzas(list)
     }
 	const pizzasPerSlide = 4;
@@ -42,7 +45,6 @@ export const Home = () => {
     for (let i = 0; i < store.pizzaTypes.classic.length; i += pizzasPerSlide) {
         groupedClassicPizzas.push(store.pizzaTypes.classic.slice(i, i + pizzasPerSlide));
     }
-    console.log(groupedClassicPizzas)
     const groupedDeluxePizzas = [];
     for (let i = 0; i < store.pizzaTypes.deluxe.length; i += pizzasPerSlide) {
         groupedDeluxePizzas.push(store.pizzaTypes.deluxe.slice(i, i + pizzasPerSlide));
