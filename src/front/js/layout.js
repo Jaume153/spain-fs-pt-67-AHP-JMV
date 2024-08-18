@@ -14,6 +14,7 @@ import { Cart } from "./pages/cart";
 import injectContext from "./store/appContext";
 import { Checkout} from "./pages/checkout";
 import { Confirmation} from "./pages/confirmation";
+import { LandingPage } from "./pages/landingPage";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
@@ -32,7 +33,7 @@ const Layout = () => {
                 <ScrollToTop>
                     <Navbar />
                     <Routes>
-                        <Route element={<LoginForm />} path="/" />
+                        <Route element={<LandingPage />} path="/" />
                         <Route element={<LoginForm />} path="/login" />
                         <Route element={<RequestResetPassword />} path="/requestResetPassword" />
                         <Route element={<Confirmation/>} path="/confirmation" />   

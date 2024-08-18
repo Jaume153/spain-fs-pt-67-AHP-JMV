@@ -21,7 +21,11 @@ export const Home = () => {
     }, []);
 
 	const handleAddToCart = (pizza) => {
-		actions.addToCart(pizza.id, localStorage.getItem("token"))
+        if (!localStorage.getItem("token")){
+            navigate("/login")
+        } else {
+            actions.addToCart(pizza.id, localStorage.getItem("token"))
+        }
 	};
 	
     const sendList = (e) => {
@@ -32,6 +36,7 @@ export const Home = () => {
             if (checkbox.checked)  
             list.push(checkbox.value);  
         }    
+        console.log(list)
         actions.getPizzas(list)
     }
 	const pizzasPerSlide = 4;

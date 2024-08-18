@@ -62,8 +62,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 							ingredients: list
 						})
 					})
-					
 					const data = await resp.json()
+					console.log(data)
 					
 					const classicPizzas = data.data.filter(pizza => pizza.pizza_type === "Classic");
                     const deluxePizzas = data.data.filter(pizza => pizza.pizza_type === "Deluxe");
@@ -172,6 +172,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 						localStorage.setItem("user_name", data.users.firstname);
 						return true
 					} else {
+						const errorMessage = document.getElementById('error-message');
+						errorMessage.style.display = 'block';
+						errorMessage.textContent = data.msg;
 						return data.msg
 					}
 
@@ -198,11 +201,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 
 					const data = await response.json()
-
+					console.log(data)
 					if (!data.msg){
-						setStore({user: data.users})
+						setStore({user: data.user})
 						localStorage.setItem("token", data.access_token)
-						localStorage.setItem("user_name", data.users.firstname);
+						localStorage.setItem("user_name", data.user.firstname);
 						return true
 					} else {
 						return data.msg
@@ -260,6 +263,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 					
 					const data = await response.json()
+					console.log(data.msg);
 					
 					if (!data.msg){
 						return data

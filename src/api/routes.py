@@ -27,6 +27,7 @@ cloudinary.config(
 )
     
 @api.route('/users', methods = ['GET'])
+@jwt_required()
 def get_users(): 
     users = User.query.all()
     users_serialized = list(map(lambda item:item.serialize(), users))
@@ -39,6 +40,7 @@ def get_users():
     return jsonify(response_body), 200
 
 @api.route('/users/user/<int:user_id>', methods = ['GET'])
+@jwt_required()
 def get_user(user_id): 
     user = User.query.get(user_id)
     if user is None:
@@ -56,11 +58,11 @@ def login():
     password = request.json.get('password')
     email = request.json.get('email')
     users_query = User.query.filter_by(email=email).first()
-    is_valid = check_password_hash(users_query.password, password)
-
-    if not users_query:
-        return jsonify({"msg": "Doesn't exist"}), 402
+    print(users_query)
+    if users_query == None:
+        return jsonify({"msg": "Bad email or password"}), 402
     
+    is_valid = check_password_hash(users_query.password, password)
     if is_valid is False:
         return jsonify({"msg": "Bad email or password"}), 401
 
@@ -98,7 +100,7 @@ def register():
     }
 
     access_token = create_access_token(identity=request_body["email"], additional_claims=additional_claims, expires_delta=False)
-    return jsonify(access_token=access_token), 200
+    return jsonify(access_token=access_token, user=user.serialize()), 200
 
 @api.route('/users/requestResetPassword', methods=['POST'])
 def requestResetPassword():
@@ -155,14 +157,18 @@ def resetPassword():
 @api.route('/users/delete/<int:user_id>', methods=['DELETE'])
 @jwt_required()
 def delete_user(user_id):
-    user = User.query.get(user_id)
-    if user:
-        User.query.filter_by(id=user_id).delete()
-        db.session.delete(user)
-        db.session.commit()
-        return jsonify({"msg": "User deleted"}), 200
-    else:
-        return jsonify({"msg": "User doesn't exist"}), 401
+    jtw_data = get_jwt()
+    user_role = jtw_data["user_role"]
+    if user_role=="Admin":
+        user = User.query.get(user_id)
+        if user:
+            User.query.filter_by(id=user_id).delete()
+            db.session.delete(user)
+            db.session.commit()
+            return jsonify({"msg": "User deleted"}), 200
+        else:
+            return jsonify({"msg": "User doesn't exist"}), 401
+    return jsonify({"msg": "You need to be an Admin"}), 410
     
 @api.route('/pizzas', methods = ['POST'])
 def get_pizzas(): 
@@ -183,50 +189,61 @@ def get_pizzas():
         ingredients = request_body["ingredients"]
         pizzaRelation = PizzaIngredient.query.all()
         pizzasRelation_serialized = list(map(lambda item:item.serialize(), pizzaRelation))
+        final = []
+        for ingredient in ingredients:
+            result = list(filter(lambda obj: obj['ingredient_id'] == int(ingredient), pizzasRelation_serialized))
+            final.extend(result)
 
-        pizza_count = defaultdict(int)
+        pizza_count = {}
+        for pizza in final:
+            pizza_id = pizza['pizza_id']
+            if pizza_id in pizza_count:
+                pizza_count[pizza_id] += 1
+            else:
+                pizza_count[pizza_id] = 1
 
-        for pizza in pizzasRelation_serialized:
-            pizza_count[pizza['pizza_id']] += 1
-        pizzas_count = [{'quantity': count, 'pizza_id': pizza_id} for pizza_id, count in pizza_count.items()]
+        somaething= []
+        for pizza_id_final, times in pizza_count.items():
+            if times == len(ingredients):
+                somaething.append(pizza_id_final)
 
         data = []
-        for pizza in pizzas_count:
-            if pizza["quantity"] == len(ingredients):
-                result = list(filter(lambda obj: obj['id'] == pizza["pizza_id"], pizzas_serialized))
-                data.extend(result) 
+        for pizz_id in somaething:
+            result2 = list(filter(lambda obj: obj['id'] == pizz_id, pizzas_serialized))
+            data.extend(result2) 
                    
         return jsonify({
             "message" : "Nice pizzas!",
             "data": data
         }), 200
 
-@api.route('/pizzas/create', methods=['POST'])    
+@api.route('/pizzas/create', methods=['POST'])  
+@jwt_required()  
 def add_pizza():
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({"msg" : "No selected file"}), 404
-    if Pizza.query.filter_by(name=request.form["name"]).first():
-        return jsonify({"msg": "Duplicated pizza"}), 409
-    # jtw_data = get_jwt()
-    # user_role = jtw_data["user_role"]
-    # if user_role != "Admin":
-    #     return jsonify({"msg" : "Not authorized"}), 401
-    try:
-        result = upload	(file)
-        pizza = Pizza()
-        pizza.new_pizza(   
-            name = request.form["name"],
-            url = result['url'],
-            price = request.form["price"],
-            description = request.form["description"],
-            pizza_type = request.form["pizza_type"]
-        )
-        db.session.add(pizza)
-        db.session.commit()
-        return jsonify({"msg": "Pizza created", "pizza": pizza.serialize()}),201
-    except Exception as e:
-        return jsonify({"error" : str(e)}) , 410
+    jtw_data = get_jwt()
+    user_role = jtw_data["user_role"]
+    if user_role=="Admin":
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"msg" : "No selected file"}), 404
+        if Pizza.query.filter_by(name=request.form["name"]).first():
+            return jsonify({"msg": "Duplicated pizza"}), 409
+        try:
+            result = upload	(file)
+            pizza = Pizza()
+            pizza.new_pizza(   
+                name = request.form["name"],
+                url = result['url'],
+                price = request.form["price"],
+                description = request.form["description"],
+                pizza_type = request.form["pizza_type"]
+            )
+            db.session.add(pizza)
+            db.session.commit()
+            return jsonify({"msg": "Pizza created", "pizza": pizza.serialize()}),201
+        except Exception as e:
+            return jsonify({"error" : str(e)}) , 410
+    return jsonify({"msg": "You need to be an Admin"}), 410
     
 
 @api.route('/pizzas/pizza/<int:pizza_id>', methods = ['GET'])
@@ -246,14 +263,18 @@ def get_pizza(pizza_id):
 @api.route('/pizzas/delete/<int:pizza_id>', methods=['DELETE'])
 @jwt_required()
 def delete_pizza(pizza_id):
-    pizza = Pizza.query.get(pizza_id)
-    if pizza:
-        Pizza.query.filter_by(id=pizza_id).delete()
-        db.session.delete(pizza)
-        db.session.commit()
-        return jsonify({"msg": "Pizza deleted"}), 200
-    else:
-        return jsonify({"msg": "Pizza doesn't exist"}),401
+    jtw_data = get_jwt()
+    user_role = jtw_data["user_role"]
+    if user_role=="Admin":
+        pizza = Pizza.query.get(pizza_id)
+        if pizza:
+            Pizza.query.filter_by(id=pizza_id).delete()
+            db.session.delete(pizza)
+            db.session.commit()
+            return jsonify({"msg": "Pizza deleted"}), 200
+        else:
+            return jsonify({"msg": "Pizza doesn't exist"}),401
+    return jsonify({"msg": "You need to be an Admin"}), 410
 
 @api.route('/orders', methods = ['GET'])
 @jwt_required()
@@ -293,6 +314,7 @@ def new_order():
     request_body = request.get_json()
     jtw_data = get_jwt()
     user_id = jtw_data["user_id"]
+    print(user_id)
     if Order.query.filter_by(user_id=user_id,  status="pending").first():
         return jsonify({"msg": "Duplicated order"}), 409
     order = Order()
@@ -316,14 +338,18 @@ def proceedCheckout(order_id):
 @api.route('/orders/delete/<int:order_id>', methods=['DELETE'])
 @jwt_required()
 def delete_order(order_id):
-    order = Order.query.get(order_id)
-    if order:
-        Order.query.filter_by(id=order_id).delete()
-        db.session.delete(order)
-        db.session.commit()
-        return jsonify({"msg": "Order deleted"}), 200
-    else:
-        return jsonify({"msg": "Order doesn't exist"}), 401
+    jtw_data = get_jwt()
+    user_role = jtw_data["user_role"]
+    if user_role=="Admin":
+        order = Order.query.get(order_id)
+        if order:
+            Order.query.filter_by(id=order_id).delete()
+            db.session.delete(order)
+            db.session.commit()
+            return jsonify({"msg": "Order deleted"}), 200
+        else:
+            return jsonify({"msg": "Order doesn't exist"}), 401
+    return jsonify({"msg": "You need to be an Admin"}), 410
     
 @api.route('/orderitems/create', methods=['POST'])
 @jwt_required()
@@ -378,7 +404,6 @@ def get_order_items(in_order_id):
             }
     result = list(repeated_pizzas.values())
     result.sort(key=lambda x: x['id'])
-    print(result)
     
     response_body = {
         "message": "ok!",
@@ -416,21 +441,25 @@ def get_ingredients():
 @api.route('/ingredients/create', methods=['POST'])
 @jwt_required()
 def new_ingredient():
-    request_body = request.get_json()
-    if Ingredient.query.filter_by(name=request_body["name"]).first():
-        return jsonify({"msg": "Duplicated ingredient"}), 409
     jtw_data = get_jwt()
     user_role = jtw_data["user_role"]
-    if user_role == "admin":
-        ingredients = Ingredient()
-        ingredients.new_ingredient(
-            id=request_body["id"],
-            name=request_body["name"]
-        )
-        db.session.add(ingredients)
-        db.session.commit()
+    if user_role=="Admin":
+        request_body = request.get_json()
+        if Ingredient.query.filter_by(name=request_body["name"]).first():
+            return jsonify({"msg": "Duplicated ingredient"}), 409
+        jtw_data = get_jwt()
+        user_role = jtw_data["user_role"]
+        if user_role == "admin":
+            ingredients = Ingredient()
+            ingredients.new_ingredient(
+                id=request_body["id"],
+                name=request_body["name"]
+            )
+            db.session.add(ingredients)
+            db.session.commit()
 
-    return jsonify({"msg": "Ingredient created", "ingredient": ingredients.serialize()}), 201
+        return jsonify({"msg": "Ingredient created", "ingredient": ingredients.serialize()}), 201
+    return jsonify({"msg": "You need to be an Admin"}), 410
 
 @api.route('/pizzaingredients', methods = ['GET'])
 def get_pizzaingredient(): 

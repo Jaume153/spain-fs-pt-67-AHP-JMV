@@ -1,11 +1,12 @@
 .logo {
-    width: 300px;
+    height: 70px;
 }
 
 .navbar {
     background: rgb(158,139,101);
-    background: linear-gradient(180deg, rgba(158,139,101,1) 66%, rgba(198,183,153,1) 100%);
-    height: 150px;
+    background: linear-gradient(180deg, rgba(158,139,101,1) 100%, rgba(198,183,153,1) 100%);
+    border-bottom: 2px solid rgb(92, 80, 58);
+    height: 100px;
     padding-bottom: 50px;
 }
 
@@ -27,7 +28,14 @@ body {
 }
 
 .btn-beige{
-    background-color: rgb(209, 190, 150);
+    background-color: rgb(183, 163, 122);
+}
+
+.landing-page .btn-beige{
+    font-size: 40px;
+    border:3px solid rgb(94, 75, 37);
+    padding: 0 30px;
+    margin-top: 40px;
 }
 
 .divider{
@@ -218,3 +226,35 @@ input[type="file"] {
     font-size: 30px;
     font-weight: 800;
 }
+
+.landing-description{
+    font-size: 30px;
+    margin-top: 120px;
+}
+
+.landing-image{
+    position: absolute;
+    object-fit: cover;
+    width: 100vw;
+    height: 100%;
+    left: 0%;
+    top: 0%;
+    overflow: hidden;
+    display: block;
+    z-index: -2;
+}
+
+.landing-gradient {
+    background: rgb(198,183,153);
+    background: linear-gradient(180deg, rgba(198,183,153,1) 80%, rgba(198,183,153,0) 100%);
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    z-index: -1;
+}
+
+a:link { 
+    text-decoration: none; 
+} 
