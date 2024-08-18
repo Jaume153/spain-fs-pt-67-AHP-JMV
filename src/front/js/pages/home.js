@@ -87,6 +87,7 @@ export const Home = () => {
                                                 <div key={index} className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
                                                     <div className="pizza-item text-center">
                                                         <img src={pizza.url} alt={pizza.name} className="img-fluid pizza-img" />
+                                                        <h4>{pizza.name}</h4>
                                                         <div className="pizza-info">
                                                             <div className="mini-details">
                                                                 <h5>{pizza.name}</h5>
@@ -124,6 +125,7 @@ export const Home = () => {
                                                 <div key={index} className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
                                                     <div className="pizza-item text-center">
                                                         <img src={pizza.url} alt={pizza.name} className="img-fluid pizza-img" />
+                                                        <h4>{pizza.name}</h4>
                                                         <div className="pizza-info">
                                                             <div className="mini-details">
                                                                 <h5>{pizza.name}</h5>

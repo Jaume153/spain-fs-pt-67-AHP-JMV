@@ -32,6 +32,7 @@ export const NewPizza  = () => {
                 <div className="login p-4 mt-5">
                     <div className="mb-3">
                         <input 
+                            className="form-control"
                             type="file" 
                             name='file' 
                             id="pizza_img" 
@@ -39,24 +40,28 @@ export const NewPizza  = () => {
                         />
                         <span className="file-name">{photo}</span> 
                         <input 
+                        className="form-control"
                             type="text" 
                             name='name' 
                             placeholder="Name" 
                             onChange={(e)=>{setName(e.target.value)}} 
                         />
                         <input 
+                        className="form-control"
                             type="text" 
                             name='description' 
                             placeholder="Description" 
                             onChange={(e)=>{setDescription(e.target.value)}} 
                         />
                         <input 
+                        className="form-control"
                             type="text" 
                             name='price' 
                             placeholder="Price" 
                             onChange={(e)=>{setPrice(e.target.value)}} 
                         />
                         <select 
+                        className="form-control"
                             name='type' 
                             onChange={(e)=>{setType(e.target.value.toLowerCase())}} 
                         >

@@ -170,6 +170,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						setStore({user: data.users})
 						localStorage.setItem("token", data.access_token);
 						localStorage.setItem("user_name", data.users.firstname);
+						localStorage.setItem("user_role", data.users.role);
 						return true
 					} else {
 						const errorMessage = document.getElementById('error-message');
@@ -206,6 +207,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						setStore({user: data.user})
 						localStorage.setItem("token", data.access_token)
 						localStorage.setItem("user_name", data.user.firstname);
+						localStorage.setItem("user_role", data.users.role);
 						return true
 					} else {
 						return data.msg
@@ -219,6 +221,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			logOut: async() => {
 				localStorage.removeItem("token");
 				localStorage.removeItem("user_name");
+				localStorage.removeItem("user_role");
 				setStore({order: ""})
 				setStore({user: ""})
 			},
