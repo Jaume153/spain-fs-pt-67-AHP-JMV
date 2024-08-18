@@ -1,13 +1,25 @@
-import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaypal, faGooglePay, faShopify, faCcVisa, faMoneyBillAlt } from '@fortawesome/free-brands-svg-icons';
 
 export const Checkout = () => {
-    const { store } = useContext(Context);
+    const { store, actions } = useContext(Context);
     const navigate = useNavigate();
-
+    const handleCheckout = async() => {
+        const result = await actions.checkout(localStorage.getItem("token"))
+        if (result) {
+            navigate("/home")
+        }
+    }
+    useEffect(() => {
+        async function fetchData() {
+            await actions.getOrder(localStorage.getItem("token"));
+            await actions.loadCart(localStorage.getItem("token"));
+        }
+        fetchData()
+	}, []);
    
     return (
         <div className="container d-flex flex-column align-items-center">
@@ -20,17 +32,18 @@ export const Checkout = () => {
                         <ul className="list-group mb-3">
                             {store.cart.map((item, index) => (
                                 <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <p className="mb-1">{item.url}</p>
-                                        <h5 className="mb-1">{item.name}</h5>                                       
+                                    <div className="d-flex justify-content-between align-items-center">
+                                        <img className="mb-1" src={item.url} style={{maxWidth: "100px"}}></img>
+                                        <h5 className="mb-1 price-cart">{item.name}</h5>                                       
                                     </div>
-                                    <span className="text-muted">${item.price.toFixed(2)}</span>
+                                    <span className="text-muted">${item.price.toFixed(2) * item.quantity}</span>
+                                    <span className="text-muted">Quantity: {item.quantity}</span>
                                 </li>
                             ))}
                         </ul>
                         <div className="d-flex justify-content-between">
                             <h4>Total:</h4>
-                            <h4>${store.cart.reduce((acc, item) => acc + item.price, 0).toFixed(2)}</h4>
+                            <h4>${store.cart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)}</h4>
                         </div>
                     </div>
     
@@ -110,7 +123,7 @@ export const Checkout = () => {
                         </div>
                     </div>
     
-                    <button type="button" className="btn btn-beige w-100 mb-3" onClick={() => navigate("/confirmation")}>Place Order</button>
+                    <button type="button" className="btn btn-beige w-100 mb-3" onClick={handleCheckout}>Place Order</button>
                     <button type="button" className="btn btn-beige w-100" onClick={() => navigate("/cart")}>Go back</button>
                 </div>
             </form>

@@ -13,7 +13,7 @@ export const NewPizza  = () => {
     const [type, setType] = useState("")
 
    
-    const handleLogin = async(e) => {
+    const uploadPizza = async(e) => {
         const photoImput = document.getElementById("pizza_img") 
         const photo = photoImput.files[0]
         const token = localStorage.getItem("token")
@@ -21,14 +21,14 @@ export const NewPizza  = () => {
         e.preventDefault()
         const addPizza = await actions.upload_pizza(name, description, price, photo, type, token)
         if (addPizza == true){
-            navigate("/home")
+            console.log("subido")
         }
     }
     
     return (
         <div className="container d-flex flex-column align-items-center">
             <h2 className="dashboard-title mt-5">Upload pizzas dashboard</h2>
-            <form onSubmit={handleLogin} className="container justify-content-center d-flex h-100 align-items-center">
+            <form onSubmit={uploadPizza} className="container justify-content-center d-flex h-100 align-items-center">
                 <div className="login p-4 mt-5">
                     <div className="mb-3">
                         <input 

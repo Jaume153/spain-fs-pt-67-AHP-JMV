@@ -1,7 +1,10 @@
+import { Checkout } from "../pages/checkout";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			message: null,
+			user: "",
 			pizzas: [
 				{
 					name: "",
@@ -24,9 +27,22 @@ const getState = ({ getStore, getActions, setStore }) => {
                 deluxe: []
             },
 
+			ingredients: [],
+
 			cart: []
 		},
 		actions: {
+			getIngredients: async() => {
+				try {
+					const resp = await fetch(`${process.env.BACKEND_URL}api/ingredients`)
+					const data = await resp.json()
+					setStore({ingredients: data.data})
+					return
+				} catch (error) {
+					return ("Error loading message from backend", error)
+				}
+			},
+			
 			getMessage: async () => {
 				try{
 					return
@@ -35,11 +51,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			getPizzas: async () => {
+			getPizzas: async (list) => {
 				try{
-					const resp = await fetch(`${process.env.BACKEND_URL}api/pizzas`)
+					const resp = await fetch(`${process.env.BACKEND_URL}api/pizzas`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify({
+							ingredients: list
+						})
+					})
 					const data = await resp.json()
-
+					console.log(data)
+					
 					const classicPizzas = data.data.filter(pizza => pizza.pizza_type === "Classic");
                     const deluxePizzas = data.data.filter(pizza => pizza.pizza_type === "Deluxe");
 
@@ -49,6 +74,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                             deluxe: deluxePizzas
                         }
                     });
+
 					setStore( { pizzas: data.data} );
 
 					//setStore({ pizzas: data.data })
@@ -60,21 +86,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			loadCart: async (token) => {
+				if (!getStore().order.id) {
+					setStore({cart: [] })
+					return console.log("Not logged in")
+				}
                 try {                      
-					const resp = await fetch(`${process.env.BACKEND_URL}api/orderitems/${getStore().order.id}`, {
+					const resp = await fetch(`${process.env.BACKEND_URL}api/orderitems/orderID/${getStore().order.id}`, {
 						method: "GET",
 						headers: {
 							'Authorization': 'Bearer ' + token 
 						}
 					});
-					const data = await resp.json();
+					const data = await resp.json();					
 					setStore({cart: data.data });
-					console.log(getStore().pizzas)
-					console.log(getStore().cart)
-
-                    
                 } catch (error) {
-                    return ("Error loading cart:", error);
+                    return console.log("Error loading cart:", error);
                 }
             },
 
@@ -86,7 +112,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						getActions().createOrder(token)
 					}         
 
-					const itemResp = await fetch(`${process.env.BACKEND_URL}api/orderitems`, {
+					const itemResp = await fetch(`${process.env.BACKEND_URL}api/orderitems/create`, {
 						method: "POST",
 						headers: {
 							"Content-Type": "application/json",
@@ -97,10 +123,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 							pizza_id: pizza_id
 						})
 					});
-					const newItemData = await itemResp.json();
-
-					setStore({ cart: [...getStore().cart, newItemData.data] });
-					
+					getActions().loadCart(token)
 					
 					return newItemData;
 				} catch (error) {
@@ -108,27 +131,31 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			// removeFromCart: async (orderItemId) => {
-            //     try {
-            //         const resp = await fetch(`${process.env.BACKEND_URL}/api/orderitems/${orderItemId}`, {
-            //             method: "DELETE",
-            //             headers: {
-            //                 "Content-Type": "application/json"
-            //             }
-            //         });
-            //         if (resp.ok) {
-            //             const store = getStore();
-            //             const updatedCart = store.cart.filter(item => item.id !== orderItemId);
-            //             setStore({ cart: updatedCart });
-            //         }
-            //     } catch (error) {
-            //         return ("Error removing item from cart:", error);
-            //     }
-            // },
-		
+			removeFromCart: async (pizza_id, token) => {
+                try {
+                    const resp = await fetch(`${process.env.BACKEND_URL}/api/orderitems/delete`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+							'Authorization': 'Bearer ' + token 
+                        },
+						body: JSON.stringify({
+							order_id: getStore().order.id,  
+							pizza_id: pizza_id
+						})
+                    });
+                    if (resp.ok) {
+                        const updatedCart = getStore().cart.filter(item => item.id !== orderItemId);
+                        setStore({ cart: updatedCart });
+						return true
+                    }
+                } catch (error) {
+                    return ("Error removing item from cart:", error);
+                }
+            },
 			login: async(email, password) => {
 				try{
-					let response = await fetch (`${process.env.BACKEND_URL}api/login`, {
+					let response = await fetch (`${process.env.BACKEND_URL}api/users/login`, {
 						method: "POST",
 						headers: {
 							"Content-Type" : "application/json"
@@ -140,9 +167,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 					const data = await response.json()
 					if (!data.msg){
+						setStore({user: data.users})
 						localStorage.setItem("token", data.access_token);
+						localStorage.setItem("user_name", data.users.firstname);
 						return true
 					} else {
+						const errorMessage = document.getElementById('error-message');
+						errorMessage.style.display = 'block';
+						errorMessage.textContent = data.msg;
 						return data.msg
 					}
 
@@ -152,10 +184,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			register: async(firstName, lastname, email, password) => {
-				console.log("1");
 				
 				try{
-					let response = await fetch (`${process.env.BACKEND_URL}api/register`, {
+					let response = await fetch (`${process.env.BACKEND_URL}api/users/register`, {
 						method: "POST",
 						headers: {
 							"Content-Type" : "application/json"
@@ -168,14 +199,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 							"role": "customer"
 						})
 					})
-					console.log("2");
-
 
 					const data = await response.json()
-					console.log(data);
-
+					console.log(data)
 					if (!data.msg){
+						setStore({user: data.user})
 						localStorage.setItem("token", data.access_token)
+						localStorage.setItem("user_name", data.user.firstname);
 						return true
 					} else {
 						return data.msg
@@ -188,6 +218,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			logOut: async() => {
 				localStorage.removeItem("token");
+				localStorage.removeItem("user_name");
+				setStore({order: ""})
+				setStore({user: ""})
 			},
 			getOrder: async(token) => {
 				if (!token){
@@ -217,7 +250,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			createOrder: async (token) => {
 				try{
-					let response = await fetch(`${process.env.BACKEND_URL}api/orders`, {
+					let response = await fetch(`${process.env.BACKEND_URL}api/orders/create`, {
 						method: "POST",
 						headers: {
 							"Content-Type" : "application/json",
@@ -230,6 +263,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 					
 					const data = await response.json()
+					console.log(data.msg);
+					
 					if (!data.msg){
 						return data
 					} else {
@@ -270,7 +305,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 				try{
-					let response = await fetch (`${process.env.BACKEND_URL}api/resetPassword`, {
+					let response = await fetch (`${process.env.BACKEND_URL}api/users/resetPassword`, {
 						method: "PATCH",
 						headers: {
 							"Content-Type" : "application/json",
@@ -285,7 +320,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						alert(data.msg)
 						return data.msg
 					}
-					alert("BB")
 
 				} catch(error) {
 					alert (error)
@@ -301,7 +335,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				formData.append('description', description)
 				formData.append('pizza_type', pizzaType)
 				try{
-					let response = await fetch (`${process.env.BACKEND_URL}api/pizzas`, {
+					let response = await fetch (`${process.env.BACKEND_URL}api/pizzas/create`, {
 						method: "POST",
 						headers: {
 							'Authorization': 'Bearer ' + token 
@@ -309,11 +343,35 @@ const getState = ({ getStore, getActions, setStore }) => {
 						body: formData
 					})
 					const data = await response.json()
-					return 
+					return true
 				} catch (error) {
 					return false
 				}
 			},
+
+			checkout: async(token) => {
+				
+				try {
+					let response = await fetch (`${process.env.BACKEND_URL}api/orders/checkout/${getStore().order.id}`, {
+						method: "PATCH",
+						headers: {
+							"Content-Type" : "application/json",
+							'Authorization': 'Bearer ' + token 
+						},
+						body: JSON.stringify({
+							"status" : "completed"
+						})
+					})
+					
+					const data = await response.json()
+					if (data){
+						alert(data.msg)
+						return data.msg
+					}
+				} catch (error) {
+					return console.log(error)
+				}
+			}
 		}
 	};
 };

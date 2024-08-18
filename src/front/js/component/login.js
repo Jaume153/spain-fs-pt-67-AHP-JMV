@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from "react"
 import { Context } from "../store/appContext"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 
 export const LoginForm  = () => {
@@ -9,6 +9,14 @@ export const LoginForm  = () => {
     const {actions} = useContext(Context)
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+
+    useEffect(() => {
+        async function fetchData() {
+            await actions.loadCart("nothing");
+        }
+        fetchData()
+    }, []);
+
     
     const handleLogin = async(e) => {
         e.preventDefault()
@@ -17,35 +25,32 @@ export const LoginForm  = () => {
             navigate("/home")
             actions.getOrder(localStorage.getItem("token"))
         } else {
-            alert (login)
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         }
     }
     return (
         <form onSubmit={handleLogin} className="container justify-content-center d-flex h-100 align-items-center">
-            <div className="login p-4 mt-5">
-                <div className="mb-3 ">
-                    <label for="exampleInputEmail1" className="form-label">Email address</label>
-                    <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" onChange={(e)=> {setEmail(e.target.value)}}/>
+            <div className="login p-4 mt-5 ">
+                <span className="h4">Please login to your account</span>
+                <div className="mb-3  mt-4">
+                    <input type="email" placeholder="Email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" onChange={(e)=> {setEmail(e.target.value)}}/>
                 </div>
                 <div className="mb-3">
-                    <label for="exampleInputPassword1" className="form-label">Password</label>
-                    <input type="password" className="form-control" id="exampleInputPassword1" onChange={(e)=> {setPassword(e.target.value)}}/>
+                    <input type="password" placeholder="Password" className="form-control" id="exampleInputPassword1" onChange={(e)=> {setPassword(e.target.value)}}/>
                 </div>
-                <button type="submit" className="btn btn-beige">Submit</button>
-                <div>
-                    <div className="newCustomer">
-                        Are you new here?
-                    </div>
-                    <button className="btn btn-primary" onClick={()=>{navigate("/register")}}>
-                        Register here
-                    </button>
+                <div className="text-center pt-1 mb-5 pb-1">
+                    <button type="submit" className="btn btn-beige w-100 mb-3 mt-3">Submit</button>
+                    <Link to="/requestResetPassword" relative="path" className="text-muted mt-3"> Forgot password? </Link>
+                    <p id="error-message" style={{ color: "red", display: "none" }} />
+                    <div className="alert alert-danger" role="alert"></div>
                 </div>
-                <div>
-                    <div className="newCustomer">
-                        Forgot your password? 
-                    </div>
-                    <button className="btn btn-danger" onClick={()=>{navigate("/requestResetPassword")}}>Click here!</button>
-                </div>
+                <div className="d-flex align-items-center justify-content-center pb-4">
+                    <p className="mb-0 me-2">Are you new here?</p>
+                    <button  type="button" className="btn btn-outline-success" onClick={()=>{navigate("/register")}}>Create new</button>
+                  </div>
             </div>
         </form>
     )

@@ -11,77 +11,88 @@ export const Home = () => {
 
     useEffect(() => {
         async function fetchData() {
-            await Promise.all([actions.getPizzas(), actions.getOrder(localStorage.getItem("token"))])
+            await Promise.all([actions.getPizzas(),  actions.getOrder(localStorage.getItem("token"), actions.getIngredients())])
             await actions.loadCart(localStorage.getItem("token"));
-
+            console.log(store.cart);
+            
         }
         fetchData()
     }, []);
 
-
-
-    const handleAddToCart = (pizza) => {
-        actions.addToCart(pizza.id, localStorage.getItem("token"))
-    };
-
-
-    const ingredients = ["Aceitunas", "Champiñones", "Pepperoni", "Pollo", "Pulled Pork"];
-
-
-    const pizzasPerSlide = 4;
+	const handleAddToCart = (pizza) => {
+        if (!localStorage.getItem("token")){
+            navigate("/login")
+        } else {
+            actions.addToCart(pizza.id, localStorage.getItem("token"))
+        }
+	};
+	
+    const sendList = (e) => {
+        let list = []
+        e.preventDefault()
+        let markedCheckbox = document.getElementsByName('ingredient');  
+        for (let checkbox of markedCheckbox) {  
+            if (checkbox.checked)  
+            list.push(checkbox.value);  
+        }    
+        console.log(list)
+        actions.getPizzas(list)
+    }
+	const pizzasPerSlide = 4;
 
     const groupedClassicPizzas = [];
     for (let i = 0; i < store.pizzaTypes.classic.length; i += pizzasPerSlide) {
         groupedClassicPizzas.push(store.pizzaTypes.classic.slice(i, i + pizzasPerSlide));
     }
-
     const groupedDeluxePizzas = [];
     for (let i = 0; i < store.pizzaTypes.deluxe.length; i += pizzasPerSlide) {
         groupedDeluxePizzas.push(store.pizzaTypes.deluxe.slice(i, i + pizzasPerSlide));
     }
-
-
-    return (
-        <div className="mt-5">
+    // console.log(store.ingredients) //Preguntar perque 5 vegades
+	return (
+        <div className="text-center mt-5">
             <div className="container">
                 <div className="row">
                     <div className="col-lg-3 mb-3">
-                        <div className="ingredient-card">
+                        <form className="ingredient-card"  onSubmit={sendList}>
                             <h5>Filtrar por Ingredientes</h5>
-                            {ingredients.map((ingredient, index) => (
+                            {store?.ingredients?.map((ingredient, index) => (
                                 <div className="form-check" key={index}>
                                     <input
                                         className="form-check-input"
                                         type="checkbox"
-                                        value={ingredient}
-                                        id={`ingredient-${index}`}
+                                        value={ingredient.id}
+                                        name="ingredient"
                                     />
                                     <label className="form-check-label" htmlFor={`ingredient-${index}`}>
-                                        {ingredient}
+                                        {ingredient.name}
                                     </label>
                                 </div>
                             ))}
-                        </div>
+                            <input type="submit" className="btn btn-beige"></input>
+                        </form>
                     </div>
                     <div className="col-lg-9">
-                        <section className="cabecera-carrusel1 text-center mb-4">
+                        <section className="cabecera-carrusel text-center mb-4">
                             <img src="https://www.dominospizza.es/images/02_Tier-Menu-CLAZZICAS-2022.png" alt="Clazzicas" className="header-img" />
                         </section>
 
-                        <div id="pizzaCarousel1" className="carousel slide mb-5">
+                        <div id="pizzaCarousel1" className="carousel slide">
                             <div className="carousel-inner">
                                 {groupedClassicPizzas.map((group, groupIndex) => (
                                     <div key={groupIndex} className={`carousel-item ${groupIndex === 0 ? "active" : ""}`}>
-                                        <div className="row justify-content-center">
+                                        <div className="row justify-content-center carousel-height">
                                             {group.map((pizza, index) => (
                                                 <div key={index} className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
                                                     <div className="pizza-item text-center">
                                                         <img src={pizza.url} alt={pizza.name} className="img-fluid pizza-img" />
                                                         <div className="pizza-info">
-                                                            <h5>{pizza.name}</h5>
-                                                            <p>{pizza.description}</p>
+                                                            <div className="mini-details">
+                                                                <h5>{pizza.name}</h5>
+                                                                <p>{pizza.description}</p>
+                                                            </div>
+                                                            <button className="btn btn-success mt-2" onClick={() => handleAddToCart(pizza)}>Add to cart</button>
                                                         </div>
-                                                        <button className="btn btn-success mt-2" onClick={() => handleAddToCart(pizza)}>Add to cart</button>
                                                     </div>
                                                 </div>
                                             ))}
@@ -99,7 +110,7 @@ export const Home = () => {
                             </button>
                         </div>
 
-                        <section className="cabecera-carrusel2 text-center mb-4">
+                        <section className="cabecera-carrusel text-center mb-4">
                             <img src="https://www.dominospizza.es/images/02_Tier-Menu-DELUXES-2022.png" alt="Deluxes" className="header-img" />
                         </section>
 
@@ -107,16 +118,18 @@ export const Home = () => {
                             <div className="carousel-inner">
                                 {groupedDeluxePizzas.map((group, groupIndex) => (
                                     <div key={groupIndex} className={`carousel-item ${groupIndex === 0 ? "active" : ""}`}>
-                                        <div className="row justify-content-center">
+                                        <div className="row justify-content-center carousel-height">
                                             {group.map((pizza, index) => (
                                                 <div key={index} className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
                                                     <div className="pizza-item text-center">
                                                         <img src={pizza.url} alt={pizza.name} className="img-fluid pizza-img" />
                                                         <div className="pizza-info">
-                                                            <h5>{pizza.name}</h5>
-                                                            <p>{pizza.description}</p>
+                                                            <div className="mini-details">
+                                                                <h5>{pizza.name}</h5>
+                                                                <p>{pizza.description}</p>
+                                                            </div>
+                                                            <button className="btn btn-success mt-2" onClick={() => handleAddToCart(pizza)}>Add to cart</button>
                                                         </div>
-                                                        <button className="btn btn-success mt-2" onClick={() => handleAddToCart(pizza)}>Add to cart</button>
                                                     </div>
                                                 </div>
                                             ))}

@@ -18,11 +18,11 @@ export const ResetPassword  = () => {
         <form className="container justify-content-center d-flex h-100 align-items-center">
             <div className="login p-4 mt-5">
                 <div className="mb-3 ">
-                    <label for="exampleInputEmail1" className="form-label">New password</label>
+                    <label htmlFor="exampleInputEmail1" className="form-label">New password</label>
                     <input type="password" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" onChange={(e)=> {setNewPassword(e.target.value)}}/>
                 </div>
                 <div className="mb-3 ">
-                    <label for="exampleInputEmail1" className="form-label">Repeat password</label>
+                    <label htmlFor="exampleInputEmail1" className="form-label">Repeat password</label>
                     <input type="password" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" onChange={(e)=> {setRepeatNewPassword(e.target.value)}}/>
                 </div>
                 <button type="submit" className="btn btn-beige" onClick={handleClick}>Reset password</button>
