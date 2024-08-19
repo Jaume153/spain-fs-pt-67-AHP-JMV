@@ -63,22 +63,10 @@ export const Navbar = () => {
                                     <li><Link to="/profile" className="dropdown-item" href="#">Profile</Link></li>
                                     <li><Link to="/orders/user" className="dropdown-item" href="#">My orders</Link></li>
                                     {isAdmin() == "Admin" &&
-                                    <li className="dropstart">
-                                        <ul className="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" href="#">Manage pizzas</ul>
-                                        <ul className="dropdown-menu">
-                                            <li><Link to="/newpizza" className="dropdown-item" href="#">Add pizza</Link></li>
-                                            <li><Link to="/home" className="dropdown-item" href="#">Delete pizza</Link></li>
-                                        </ul>
-                                    </li>
+                                    <li><Link to="/newpizza" className="dropdown-item" href="#">Manage pizzas</Link></li>
                                     }
                                     {isAdmin() == "Admin" &&
-                                    <li className="dropstart">
-                                        <ul to="/home" className="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" href="#">Manage users</ul>
-                                        <ul className="dropdown-menu">
-                                            <li><Link to="/newpizza" className="dropdown-item" href="#">View all users</Link></li>
-                                            <li><Link to="/home" className="dropdown-item" href="#">Delete user</Link></li>
-                                        </ul>
-                                    </li>
+                                    <li><Link to="/users/all" className="dropdown-item" href="#">Manage users</Link></li>
                                     }
                                     <li><Link to="/login" onClick={handleLogOut} className="dropdown-item" href="#">LogOut</Link></li>
                                     

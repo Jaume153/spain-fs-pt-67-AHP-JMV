@@ -1,7 +1,9 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			user: "",
+			user: [],
+
+			allUsers:[],
 
 			pizzas: [
 				{
@@ -19,7 +21,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				payment_method :"",
 				id: ""
 			},
-
+			
 			allOrders: [],
 
 			singleOrder: [],
@@ -112,7 +114,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			requestResetPassword: async(email)=> {
 				try{
-					let response = await fetch (`${process.env.BACKEND_URL}api/requestResetPassword`, {
+					let response = await fetch (`${process.env.BACKEND_URL}api/users/requestResetPassword`, {
 						method: "POST",
 						headers: {
 							"Content-Type" : "application/json"
@@ -177,6 +179,41 @@ const getState = ({ getStore, getActions, setStore }) => {
 					
 				}
 			},
+
+			getAllUsers: async(token)=> {
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}api/users`, {
+						method: "GET",
+						headers: {
+							'Authorization': 'Bearer ' + token 
+						}
+					})	
+					const data = await response.json()
+					console.log(data)
+					setStore({allUsers: data.data})
+					return
+				} catch (error) {
+					
+				}
+			},
+
+			deleteUser: async(token)=> {
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}api/users/user/${localStorage.getItem("user_id")}`, {
+						method: "GET",
+						headers: {
+							'Authorization': 'Bearer ' + token 
+						}
+					})	
+					const data = await response.json()
+					console.log("Llega")
+					setStore({user: data.data})
+					return
+				} catch (error) {
+					
+				}
+			},
+
 			getPizzas: async (list) => {
 				try{
 					const resp = await fetch(`${process.env.BACKEND_URL}api/pizzas`, {
