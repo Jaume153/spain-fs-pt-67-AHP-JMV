@@ -1,6 +1,6 @@
 import React, {useContext, useState} from "react"
 import { Context } from "../store/appContext"
-import { useSearchParams } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 
 export const ResetPassword  = () => {
     
@@ -8,10 +8,14 @@ export const ResetPassword  = () => {
     const {actions} = useContext(Context)
     const [newPassword, setNewPassword] = useState("")
     const [repeatNewPassword, setRepeatNewPassword] = useState("")
+    const navigate = useNavigate();
 
     const handleClick = async(e) => {
         e.preventDefault()
-        actions.resetPassword(newPassword, repeatNewPassword, searchParams.get('token'))
+        const correctPassword = await actions.resetPassword(newPassword, repeatNewPassword, searchParams.get('token'))
+        if (correctPassword == true) {
+            navigate("/login")
+        }
 
     }
     return (

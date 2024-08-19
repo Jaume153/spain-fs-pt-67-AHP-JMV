@@ -154,7 +154,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const data = await response.json()
 					if (data){
 						alert(data.msg)
-						return data.msg
+						return true
 					}
 
 				} catch(error) {
