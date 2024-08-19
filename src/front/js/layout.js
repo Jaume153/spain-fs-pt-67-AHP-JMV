@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
-
 import { LoginForm } from "./component/login";
 import { Register } from "./component/register";
 import { RequestResetPassword } from "./component/requestResetPassword";
@@ -16,9 +15,9 @@ import { LandingPage } from "./pages/landingPage";
 import { Profile } from "./pages/profile";
 import { UserOrders } from "./pages/userOrders";
 import { SingleOrder } from "./pages/singleOrder";
-
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
+import { AllUsersManage } from "./component/allUserManage";
 
 //create your first component
 const Layout = () => {
@@ -46,6 +45,8 @@ const Layout = () => {
                         <Route element={<Profile />} path="/profile" /> 
                         <Route element={<UserOrders />} path="/orders/user" />
                         <Route element={<SingleOrder />} path="/orders/order/:order_id" />  
+                        <Route element={<AllUsersManage />} path="/users/all" />  
+
 
 
                         <Route element={<h1>Not found!</h1>} />
