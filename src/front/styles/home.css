@@ -269,3 +269,60 @@ a:link {
     font-weight: bolder;
     font-size: 20px;
 }
+
+.profile-title {
+    font-size: 40px;
+    font-weight: bold;
+    color: rgb(158,139,101);
+    text-decoration-line: underline;
+}
+
+.profile-card {
+    width: 500px;
+    border: 3px solid rgb(211, 134, 18);
+    box-shadow: 0px 3px 5px 0px rgba(130, 93, 34, 0.966);
+    border-radius: 20px;
+    background-color: rgba(240, 248, 255, 0.432);
+    padding: 20px;
+}
+
+.profile-card .list-group-item {
+    background-color: transparent; 
+    border: none; 
+    font-size: 18px; 
+}
+
+.user-orders-title {
+    font-size: 40px;
+    font-weight: bold;
+    color: rgb(158,139,101);
+    text-decoration-line: underline;
+}
+
+.user-orders-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.user-order-card {
+    width: 300px;
+    border: 3px solid rgb(211, 134, 18);
+    box-shadow: 0px 3px 5px 0px rgba(130, 93, 34, 0.966);
+    border-radius: 20px;
+    background-color: rgba(240, 248, 255, 0.432);
+    padding: 15px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.user-order-card:hover {
+    transform: scale(1.05);
+}
+
+.user-order-card .list-group-item {
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+}
