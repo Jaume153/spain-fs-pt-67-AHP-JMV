@@ -111,7 +111,7 @@ def requestResetPassword():
         <body>
             <p>Hi,<br>
             Haz click aqui para recuperar tu contraseña
-            <a style="color: red" href="https://upgraded-guide-9r4pgx45v5p3x4pr-3000.app.github.dev/users/resetPassword?token=""" + token +"""" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Recuperarla!</a>
+            <a style="color: red" href="https://congenial-giggle-pjrvq5vg7p436755-3000.app.github.dev/users/resetPassword?token=""" + token +"""" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Recuperarla!</a>
                 </td>
             </tr>
         </table>
@@ -145,7 +145,7 @@ def resetPassword():
     users_query = User.query.filter_by(email=user_email).first()
     users_query.password = encriptedPassword
     db.session.commit()
-    return jsonify({"msg": "Good"}) , 200
+    return jsonify({"msg": "Password changed"}) , 200
 
 @api.route('/users/delete/<int:user_id>', methods=['DELETE'])
 @jwt_required()
