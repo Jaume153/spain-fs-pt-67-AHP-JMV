@@ -1,13 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-
-
 export const LandingPage = () => {
     const navigate = useNavigate();
-   
-   
-    return (
+       return (
         <div className="container mt-5 text-center w-100 h-100 landing-page">
             <div className="landing-gradient"></div>
             <img src="https://res.cloudinary.com/didd1mjsp/image/upload/v1723976999/Untitled-5_vybrtx.png"></img>
@@ -16,6 +12,5 @@ export const LandingPage = () => {
             <button className="btn btn-beige" onClick={() => navigate("/home")}>Enter</button>
             <img src="https://flawless.life/wp-content/uploads/2020/02/Le_migliori_Pizzerie_di_Milano_Cover.jpg" className="landing-image"></img>
         </div>
-    
     );
 };

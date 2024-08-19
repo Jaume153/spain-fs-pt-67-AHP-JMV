@@ -46,7 +46,8 @@ class User(db.Model):
             "id": self.id,
             "firstname": self.firstname,
             "lastname": self.lastname,
-            "email": self.email
+            "email": self.email,
+            "role" : self.role.value
         }
 
 class Order(db.Model):
