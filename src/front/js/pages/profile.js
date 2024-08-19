@@ -7,14 +7,11 @@ export const Profile = () => {
     const navigate = useNavigate();
     useEffect(() => {
         async function fetchData() {
-            await actions.getOrder(localStorage.getItem("token"));
             await actions.getUser(localStorage.getItem("token"));
-            await actions.loadCart(localStorage.getItem("token"));
         }
         fetchData()
-
 	}, []);
-    console.log(store.user)
+    
     return (
         <div className="container d-flex flex-column align-items-center">
             <h2 className="profile-title mt-5">Your profile</h2>

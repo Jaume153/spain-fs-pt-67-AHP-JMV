@@ -15,12 +15,6 @@ export const Navbar = () => {
 
     
     let cartCount = 0
-    useEffect(() => {
-        async function fetchData() {
-            await actions.getOrder(localStorage.getItem("token"))
-        }
-        fetchData()
-	}, []);
     
     if (store.cart != ""){
         cartCount = store.cart.reduce(function(prev, cur) {
