@@ -1,25 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import "../../styles/home.css";
 
 export const Home = () => {
     const { store, actions } = useContext(Context);
-    const [searchTerm, setSearchTerm] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchData() {
             await Promise.all([actions.getPizzas(),  actions.getOrder(localStorage.getItem("token"), actions.getIngredients())])
-            await actions.loadCart(localStorage.getItem("token"));
-            console.log(store.cart);
-            
         }
         fetchData()
     }, []);
-
 	const handleAddToCart = (pizza) => {
         if (!localStorage.getItem("token")){
             navigate("/login")
@@ -36,7 +29,6 @@ export const Home = () => {
             if (checkbox.checked)  
             list.push(checkbox.value);  
         }    
-        console.log(list)
         actions.getPizzas(list)
     }
 	const pizzasPerSlide = 4;
@@ -58,7 +50,7 @@ export const Home = () => {
                         <form className="ingredient-card"  onSubmit={sendList}>
                             <h5>Filtrar por Ingredientes</h5>
                             {store?.ingredients?.map((ingredient, index) => (
-                                <div className="form-check" key={index}>
+                                <div className="form-check d-flex ps-4" key={index}>
                                     <input
                                         className="form-check-input"
                                         type="checkbox"
@@ -87,6 +79,7 @@ export const Home = () => {
                                                 <div key={index} className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
                                                     <div className="pizza-item text-center">
                                                         <img src={pizza.url} alt={pizza.name} className="img-fluid pizza-img" />
+                                                        <h4>{pizza.name}</h4>
                                                         <div className="pizza-info">
                                                             <div className="mini-details">
                                                                 <h5>{pizza.name}</h5>
@@ -124,6 +117,7 @@ export const Home = () => {
                                                 <div key={index} className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
                                                     <div className="pizza-item text-center">
                                                         <img src={pizza.url} alt={pizza.name} className="img-fluid pizza-img" />
+                                                        <h4>{pizza.name}</h4>
                                                         <div className="pizza-info">
                                                             <div className="mini-details">
                                                                 <h5>{pizza.name}</h5>

@@ -25,9 +25,9 @@ export const LoginForm  = () => {
             navigate("/home")
             actions.getOrder(localStorage.getItem("token"))
         } else {
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <div className="alert alert-warning alert-dismissible fade show" role="alert">
                 <strong>Holy guacamole!</strong> You should check in on some of those fields below.
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
     }
@@ -41,11 +41,10 @@ export const LoginForm  = () => {
                 <div className="mb-3">
                     <input type="password" placeholder="Password" className="form-control" id="exampleInputPassword1" onChange={(e)=> {setPassword(e.target.value)}}/>
                 </div>
-                <div className="text-center pt-1 mb-5 pb-1">
+                <div className="text-center pt-1 mb-5 pb-1 d-flex flex-column ">
                     <button type="submit" className="btn btn-beige w-100 mb-3 mt-3">Submit</button>
                     <Link to="/requestResetPassword" relative="path" className="text-muted mt-3"> Forgot password? </Link>
-                    <p id="error-message" style={{ color: "red", display: "none" }} />
-                    <div className="alert alert-danger" role="alert"></div>
+                    <p id="error-message" className="error-message m-0"/>
                 </div>
                 <div className="d-flex align-items-center justify-content-center pb-4">
                     <p className="mb-0 me-2">Are you new here?</p>

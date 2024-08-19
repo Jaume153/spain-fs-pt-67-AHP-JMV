@@ -9,12 +9,13 @@ import { RequestResetPassword } from "./component/requestResetPassword";
 import { ResetPassword } from "./component/resetPassword";
 import { Home } from "./pages/home";
 import { NewPizza } from "./component/newPizza";
-import { SearchResults } from "./pages/searchResults";
 import { Cart } from "./pages/cart";
 import injectContext from "./store/appContext";
 import { Checkout} from "./pages/checkout";
-import { Confirmation} from "./pages/confirmation";
 import { LandingPage } from "./pages/landingPage";
+import { Profile } from "./pages/profile";
+import { UserOrders } from "./pages/userOrders";
+import { SingleOrder } from "./pages/singleOrder";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
@@ -36,16 +37,17 @@ const Layout = () => {
                         <Route element={<LandingPage />} path="/" />
                         <Route element={<LoginForm />} path="/login" />
                         <Route element={<RequestResetPassword />} path="/requestResetPassword" />
-                        <Route element={<Confirmation/>} path="/confirmation" />   
                         <Route element={<Checkout/>} path="/checkout" />
                         <Route element={<Cart />} path="/cart" />
                         <Route element={<Register />} path="/register" />
                         <Route element={<ResetPassword />} path="/users/resetPassword" />
                         <Route element={<Home />} path="/home" />   
-                        <Route element={<NewPizza />} path="/newPizza" />                      
-                        {/* <Route element={<Demo />} path="/demo" /> */}
-                        
-                        <Route element={<SearchResults />} path="/search/:searchTerm" />
+                        <Route element={<NewPizza />} path="/newPizza" />  
+                        <Route element={<Profile />} path="/profile" /> 
+                        <Route element={<UserOrders />} path="/orders/user" />
+                        <Route element={<SingleOrder />} path="/orders/order/:order_id" />  
+
+
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />

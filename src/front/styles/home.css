@@ -1,12 +1,12 @@
 .logo {
-    height: 70px;
+    height: 50px;
 }
 
 .navbar {
     background: rgb(158,139,101);
     background: linear-gradient(180deg, rgba(158,139,101,1) 100%, rgba(198,183,153,1) 100%);
     border-bottom: 2px solid rgb(92, 80, 58);
-    height: 100px;
+    height: 70px;
     padding-bottom: 50px;
 }
 
@@ -258,3 +258,14 @@ input[type="file"] {
 a:link { 
     text-decoration: none; 
 } 
+.error-message{
+    font-size: 20px;
+    color: red;
+    display: none;
+}
+
+.login-name{
+    padding: 10px;
+    font-weight: bolder;
+    font-size: 20px;
+}

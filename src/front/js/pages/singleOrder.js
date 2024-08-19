@@ -1,38 +1,26 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect,useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Context } from "../store/appContext";
 
 
-export const Cart = () => {
+export const SingleOrder = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
-
-    const [cartItems, setCartItems] = useState([]);
+    const {order_id} = useParams()
     useEffect(() => {
         async function fetchData() {
+            await actions.getSingleOrder(localStorage.getItem("token"), order_id)
             await actions.getOrder(localStorage.getItem("token"));
             await actions.getUser(localStorage.getItem("token"))
             await actions.loadCart(localStorage.getItem("token"));
         }
         fetchData()
 	}, []);
-    const handleAddToCart = (pizza) => {
-		const refresh = actions.addToCart(pizza.id, localStorage.getItem("token"))
-        setCartItems(refresh)
-	};
-
-    const handleRemoveFromCart = async(pizza_id) => {
-        const removed  = await actions.removeFromCart(pizza_id, localStorage.getItem("token"));
-        if (removed){
-            actions.loadCart(localStorage.getItem("token"));
-        }
-    };
-
    
     return (
         <div className="container mt-5">
-            <h2>Your Cart</h2>
+            <h2>Order nº: {order_id} </h2>
             <div className="cart-items gap-3">
                 {store.cart.map((item, index) => (
                     <div key={index} className="cart-item d-flex align-items-center mb-4">
@@ -58,8 +46,4 @@ export const Cart = () => {
             </div>
         </div>
     );
-};
-
-Cart.propTypes = {
-	match: PropTypes.object
 };
