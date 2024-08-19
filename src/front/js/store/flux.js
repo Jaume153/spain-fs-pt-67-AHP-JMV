@@ -286,20 +286,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			getSingleOrder: async (token, id) => {
-				try {
-					let response = await fetch(`${process.env.BACKEND_URL}api/orders/order/${id}`, {
+				try {                      
+					const resp = await fetch(`${process.env.BACKEND_URL}api/orderitems/orderID/${id}`, {
 						method: "GET",
 						headers: {
 							'Authorization': 'Bearer ' + token 
-						},
-					})
-					const data = await response.json()
-					setStore({singleOrder: data.data})
-					console.log(getStore().singleOrder)
-					return
-				} catch (error) {
-					
-				}
+						}
+					});
+					const data = await resp.json();
+					console.log(data)
+					setStore({singleOrder: data.data });
+                } catch (error) {
+                    return console.log("Error loading cart:", error);
+                }
 			},
 
 			createOrder: async (token) => {

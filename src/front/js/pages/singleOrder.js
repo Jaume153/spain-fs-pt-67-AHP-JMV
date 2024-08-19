@@ -11,9 +11,6 @@ export const SingleOrder = () => {
     useEffect(() => {
         async function fetchData() {
             await actions.getSingleOrder(localStorage.getItem("token"), order_id)
-            await actions.getOrder(localStorage.getItem("token"));
-            await actions.getUser(localStorage.getItem("token"))
-            await actions.loadCart(localStorage.getItem("token"));
         }
         fetchData()
 	}, []);
@@ -22,7 +19,7 @@ export const SingleOrder = () => {
         <div className="container mt-5">
             <h2>Order nº: {order_id} </h2>
             <div className="cart-items gap-3">
-                {store.cart.map((item, index) => (
+                {store.singleOrder.map((item, index) => (
                     <div key={index} className="cart-item d-flex align-items-center mb-4">
                         <img src={item.url} alt={item.name} className="img-fluid cart-img me-5" />
                         <div className='me-auto description-cart'>
@@ -39,10 +36,6 @@ export const SingleOrder = () => {
                         </div>
                     </div>
                 ))}
-            </div>
-            <div className="cart-buttons">
-                <button className="btn btn-primary me-2" onClick={() => navigate("/checkout")}>Go to checkout</button>
-                <button className="btn btn-secondary" onClick={() => navigate("/home")}>Continue shopping</button>
             </div>
         </div>
     );
