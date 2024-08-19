@@ -1,7 +1,345 @@
-/*
-    home.css: This website contains selectors only used in home.css
+.logo {
+    height: 50px;
+}
 
-    All pages share the styles on index.css but you should create 
-    one more css for each page that will contain the selected used 
-    on that page only (the ones not reused in other pages).
-*/
+.navbar {
+    background: rgb(158,139,101);
+    background: linear-gradient(180deg, rgba(158,139,101,1) 100%, rgba(198,183,153,1) 100%);
+    border-bottom: 2px solid rgb(92, 80, 58);
+    height: 70px;
+    padding-bottom: 50px;
+}
+
+body {
+    background-color: rgb(198, 183, 153);
+    font-family: "Roboto", sans-serif;
+}
+
+.login {
+    width: 400px;
+    border: 3px solid rgb(211, 134, 18);
+    -webkit-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 3px 5px 0px rgba(130, 93, 34, 0.966);
+    border-radius: 20px;
+    background-color: rgba(240, 248, 255, 0.432);
+    overflow: hidden;
+    padding: 20px;
+}
+
+.btn-beige{
+    background-color: rgb(183, 163, 122);
+}
+
+.landing-page .btn-beige{
+    font-size: 40px;
+    border:3px solid rgb(94, 75, 37);
+    padding: 0 30px;
+    margin-top: 40px;
+}
+
+.divider{
+    background-color: transparent;
+    display: block;
+    height: 1px;
+    border-width: 0;
+    border-top: 1px solid #e7e7e7;
+    line-height: 19px;
+    margin-top: 0;
+    margin-bottom: 14px;
+}
+
+.newCustomer::after {
+    content: "";
+    width: 100%;
+    background-color: transparent;
+    display: block;
+    height: 1px;
+    border-top: 1px solid #e7e7e7;
+    position: absolute;
+    top: 50%;
+    margin-top: -1px;
+    z-index: 1;
+}
+
+.file-name {
+    display: block;
+    margin-top: 5px;
+    font-size: 14px;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.dashboard-title {
+    font-size: 40px;
+    font-weight: bold;
+    color:  rgb(158,139,101);
+    text-decoration-line: underline;
+}
+
+input[type="text"], select, .btn-beige {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    box-sizing: border-box; 
+}
+
+input[type="file"] {
+    margin-bottom: 10px; 
+}
+
+.checkout-title {
+    font-size: 40px;
+    font-weight: bold;
+    color: rgb(158,139,101);
+    text-decoration-line: underline;
+}
+
+.checkout-card {
+    width: 500px;
+    border: 3px solid rgb(211, 134, 18);
+    box-shadow: 0px 3px 5px 0px rgba(130, 93, 34, 0.966);
+    border-radius: 20px;
+    background-color: rgba(240, 248, 255, 0.432);
+    padding: 20px;
+}
+
+.payment-logo {
+    height: 40px;
+    width: auto;
+}
+
+.payment-text-group .form-check-label {
+    font-weight: bold;
+    color: rgb(158,139,101);
+}
+
+.choose-payment-method{
+    margin-bottom: 20px;
+}
+
+.ingredient-card {
+    width: 100%;
+    border: 3px solid rgb(211, 134, 18);
+    box-shadow: 0px 3px 5px 0px rgba(130, 93, 34, 0.966);
+    border-radius: 20px;
+    background-color: rgba(240, 248, 255, 0.432);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.ingredient-card h5 {
+    color: rgb(158,139,101);
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-decoration-line: underline;
+}
+
+.ingredient-card .form-check-input {
+    margin-right: 10px;
+}
+
+.ingredient-card .form-check-label {
+    color: rgb(158,139,101);
+    font-weight: bold;
+}
+
+.cabecera-carrusel {
+    overflow: hidden;
+}
+
+.carousel {
+    width: 100%;
+}
+
+.pizza-img {
+    max-width: 90%; 
+    height: auto;
+}
+
+.carousel-inner .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.carousel-control-prev, .carousel-control-next {
+    width: 5%;
+}
+
+.pizza-item {
+    position: relative; 
+}
+
+.pizza-item .pizza-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    opacity: 0; 
+    visibility: hidden; 
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    position: absolute; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    text-align: center;
+    width: 100%; 
+    background-color: rgba(198, 183, 153, 0.8); 
+    color: white; 
+    padding: 5px;
+    border-radius: 10px; 
+    z-index: 10; 
+    font-size: 0.9rem; 
+}
+
+.pizza-item:hover .pizza-info,
+.pizza-item:hover .btn-success {
+    opacity: 1; 
+    visibility: visible; 
+}
+
+.mini-details{
+    display: flex; 
+    align-content: center; 
+    justify-content: center;
+    flex-direction: column
+}
+
+.carousel-height{
+    height: 250px;
+    align-items: center;
+}
+
+.cart-item{
+    background-color: rgba(255, 228, 196, 0.563);
+    padding-right: 50px;
+    border-radius: 30px;
+}
+
+.description-cart{
+    max-width: 50%;
+}
+.price-cart{
+    font-size: 30px;
+    font-weight: 800;
+}
+
+.landing-description{
+    font-size: 30px;
+    margin-top: 120px;
+}
+
+.landing-image{
+    position: absolute;
+    object-fit: cover;
+    width: 100vw;
+    height: 100%;
+    left: 0%;
+    top: 0%;
+    overflow: hidden;
+    display: block;
+    z-index: -2;
+}
+
+.landing-gradient {
+    background: rgb(198,183,153);
+    background: linear-gradient(180deg, rgba(198,183,153,1) 80%, rgba(198,183,153,0) 100%);
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    z-index: -1;
+}
+
+a:link { 
+    text-decoration: none; 
+} 
+.error-message{
+    font-size: 20px;
+    color: red;
+    display: none;
+}
+
+.login-name{
+    padding: 10px;
+    font-weight: bolder;
+    font-size: 20px;
+}
+
+.profile-title {
+    font-size: 40px;
+    font-weight: bold;
+    color: rgb(158,139,101);
+    text-decoration-line: underline;
+}
+
+.profile-card {
+    width: 500px;
+    border: 3px solid rgb(211, 134, 18);
+    box-shadow: 0px 3px 5px 0px rgba(130, 93, 34, 0.966);
+    border-radius: 20px;
+    background-color: rgba(240, 248, 255, 0.432);
+    padding: 20px;
+}
+
+.profile-card .list-group-item {
+    background-color: transparent; 
+    border: none; 
+    font-size: 18px; 
+}
+
+.user-orders-title {
+    font-size: 40px;
+    font-weight: bold;
+    color: rgb(158,139,101);
+    text-decoration-line: underline;
+}
+
+.user-orders-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.user-order-card {
+    width: 300px;
+    border: 3px solid rgb(211, 134, 18);
+    box-shadow: 0px 3px 5px 0px rgba(130, 93, 34, 0.966);
+    border-radius: 20px;
+    background-color: rgba(240, 248, 255, 0.432);
+    padding: 15px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.user-order-card:hover {
+    transform: scale(1.05);
+}
+
+.user-order-card .list-group-item {
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+}
+
+.user-card {
+    width: 300px;
+    border: 3px solid rgb(211, 134, 18);
+    box-shadow: 0px 3px 5px 0px rgba(130, 93, 34, 0.966);
+    border-radius: 20px;
+    background-color: rgba(240, 248, 255, 0.432);
+    padding: 15px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.user-card .list-group-item{
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+}
