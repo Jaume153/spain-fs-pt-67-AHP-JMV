@@ -13,16 +13,15 @@ export const Profile = () => {
 	}, []);
     
     return (
-        <div>
-            <div className="card w-25">
+        <div className="container d-flex flex-column align-items-center">
+            <h2 className="profile-title mt-5">Your profile</h2>
+            <div className="profile-card p-4 mt-5">
                 <ul className="list-group list-group-flush">
-                    <li className="list-group-item">{store.user.firstname}</li>
-                    <li className="list-group-item">{store.user.lastname}</li>
-                    <li className="list-group-item">{store.user.email}</li>
+                    <li className="list-group-item"><strong>First Name:</strong> {store.user.firstname}</li>
+                    <li className="list-group-item"><strong>Last Name:</strong> {store.user.lastname}</li>
+                    <li className="list-group-item"><strong>Email:</strong> {store.user.email}</li>
                 </ul>
             </div>
-            <button className="btn btn-beige" onClick={()=> {navigate("/home")}}>Home</button>
         </div>
     );
-    
 };

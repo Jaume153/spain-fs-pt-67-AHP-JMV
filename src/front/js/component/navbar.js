@@ -59,7 +59,7 @@ export const Navbar = () => {
                                 <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                                     <i className="fa-solid fa-bars"></i>
                                 </button>
-                                <ul className="dropdown-menu">
+                                <ul className="dropdown-menu dropdown-menu-end">
                                     <li><Link to="/profile" className="dropdown-item" href="#">Profile</Link></li>
                                     <li><Link to="/orders/user" className="dropdown-item" href="#">My orders</Link></li>
                                     {isAdmin() == "Admin" &&
