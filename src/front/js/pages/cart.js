@@ -12,8 +12,6 @@ export const Cart = () => {
     useEffect(() => {
         async function fetchData() {
             await actions.getOrder(localStorage.getItem("token"));
-            await actions.getUser(localStorage.getItem("token"))
-            await actions.loadCart(localStorage.getItem("token"));
         }
         fetchData()
 	}, []);
