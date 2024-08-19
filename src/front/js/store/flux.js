@@ -60,7 +60,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						localStorage.setItem("token", data.access_token)
 						localStorage.setItem("user_name", data.user.firstname);
 						localStorage.setItem("user_role", data.user.role);
-						localStorage.setItem("user_id", data.users.id);
+						localStorage.setItem("user_id", data.user.id);
 						return true
 					} else {
 						return data.msg
