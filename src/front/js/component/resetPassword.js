@@ -1,6 +1,6 @@
 import React, {useContext, useState} from "react"
 import { Context } from "../store/appContext"
-import { useNavigate, useSearchParams } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 
 export const ResetPassword  = () => {
     

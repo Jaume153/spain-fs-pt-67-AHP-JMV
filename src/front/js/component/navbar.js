@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { Context } from "../store/appContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons'
@@ -12,9 +12,23 @@ export const Navbar = () => {
     
 	const { store, actions } = useContext(Context);
     const navigate = useNavigate();
-    const cartCount = store.cart.reduce(function(prev, cur) {
-        return prev + cur.quantity;
-      }, 0);
+
+    
+    let cartCount = 0
+    useEffect(() => {
+        async function fetchData() {
+            await actions.getOrder(localStorage.getItem("token"))
+        }
+        fetchData()
+	}, []);
+    
+    if (store.cart != ""){
+        cartCount = store.cart.reduce(function(prev, cur) {
+            return prev + cur.quantity;
+          }, 0);
+    } else {
+        cartCount = 0
+    }
 
     const isLogged = () => {
         return localStorage.getItem("user_name")
@@ -47,32 +61,32 @@ export const Navbar = () => {
                                     {cartCount}
                                 </span>
                             </button>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                                    <i class="fa-solid fa-bars"></i>
+                            <div className="dropdown">
+                                <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                    <i className="fa-solid fa-bars"></i>
                                 </button>
-                                <ul class="dropdown-menu">
-                                    <li><Link to="/home" class="dropdown-item" href="#">Profile</Link></li>
-                                    <li><Link to="/home" class="dropdown-item" href="#">My orders</Link></li>
+                                <ul className="dropdown-menu">
+                                    <li><Link to="/profile" className="dropdown-item" href="#">Profile</Link></li>
+                                    <li><Link to="/orders/user" className="dropdown-item" href="#">My orders</Link></li>
                                     {isAdmin() == "Admin" &&
                                     <li className="dropstart">
-                                        <ul class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" href="#">Manage pizzas</ul>
+                                        <ul className="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" href="#">Manage pizzas</ul>
                                         <ul className="dropdown-menu">
-                                            <li><Link to="/newpizza" class="dropdown-item" href="#">Add pizza</Link></li>
-                                            <li><Link to="/home" class="dropdown-item" href="#">Delete pizza</Link></li>
+                                            <li><Link to="/newpizza" className="dropdown-item" href="#">Add pizza</Link></li>
+                                            <li><Link to="/home" className="dropdown-item" href="#">Delete pizza</Link></li>
                                         </ul>
                                     </li>
                                     }
                                     {isAdmin() == "Admin" &&
                                     <li className="dropstart">
-                                        <ul to="/home" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" href="#">Manage users</ul>
+                                        <ul to="/home" className="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" href="#">Manage users</ul>
                                         <ul className="dropdown-menu">
-                                            <li><Link to="/newpizza" class="dropdown-item" href="#">View all users</Link></li>
-                                            <li><Link to="/home" class="dropdown-item" href="#">Delete user</Link></li>
+                                            <li><Link to="/newpizza" className="dropdown-item" href="#">View all users</Link></li>
+                                            <li><Link to="/home" className="dropdown-item" href="#">Delete user</Link></li>
                                         </ul>
                                     </li>
                                     }
-                                    <li><Link to="/login" onClick={handleLogOut} class="dropdown-item" href="#">LogOut</Link></li>
+                                    <li><Link to="/login" onClick={handleLogOut} className="dropdown-item" href="#">LogOut</Link></li>
                                     
                                 </ul>
                             </div>

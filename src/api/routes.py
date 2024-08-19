@@ -1,6 +1,3 @@
-"""
-This module takes care of starting the API Server, Loading the DB and Adding the endpoints
-"""
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Pizza, Order, OrderItems, Ingredient, PizzaIngredient
 from api.utils import generate_sitemap, APIException
@@ -9,7 +6,6 @@ from flask_cors import CORS
 import cloudinary
 from cloudinary.uploader import upload
 from flask_bcrypt import check_password_hash, generate_password_hash
-from collections import defaultdict
 
 import smtplib
 from email.mime.text import MIMEText
@@ -32,7 +28,7 @@ def get_users():
     users = User.query.all()
     users_serialized = list(map(lambda item:item.serialize(), users))
     response_body = {
-        "message" : "Nice!",
+        "msg" : "Nice!",
         "data": users_serialized
     }
     if (users == []):
@@ -47,11 +43,10 @@ def get_user(user_id):
         return jsonify({"msg": "User not found"}), 404
     user_info = User.query.filter_by(id=user_id).first().serialize()    
     response_body = {
-        "message" : "Nice!",
+        "msg" : "Nice!",
         "data": user_info
     }
     return jsonify(response_body), 200
-
 
 @api.route('/users/login', methods=['POST'])
 def login():
@@ -76,7 +71,6 @@ def login():
         access_token = create_access_token(identity=users_query.id, additional_claims=additional_claims, expires_delta=False)
         return jsonify(access_token=access_token, users= users_query.serialize()), 200
     return jsonify({"msg": "Bad email or password"}), 401
-
 
 @api.route('/users/register', methods=['POST'])
 def register():
@@ -125,7 +119,6 @@ def requestResetPassword():
         </html>
         """
 
-        # Create a multipart message and set headers
         message = MIMEMultipart()
         message["From"] = "liina.hp96@gmail.com"
         message["To"] = email
@@ -177,7 +170,7 @@ def get_pizzas():
         pizzas = Pizza.query.all()
         pizzas_serialized = list(map(lambda item:item.serialize(), pizzas))
         response_body = {
-            "message" : "Nice pizzas!",
+            "msg" : "Nice pizzas!",
             "data": pizzas_serialized
         }
         if (pizzas == []):
@@ -213,7 +206,7 @@ def get_pizzas():
             data.extend(result2) 
                    
         return jsonify({
-            "message" : "Nice pizzas!",
+            "msg" : "Nice pizzas!",
             "data": data
         }), 200
 
@@ -244,8 +237,7 @@ def add_pizza():
         except Exception as e:
             return jsonify({"error" : str(e)}) , 410
     return jsonify({"msg": "You need to be an Admin"}), 410
-    
-
+  
 @api.route('/pizzas/pizza/<int:pizza_id>', methods = ['GET'])
 def get_pizza(pizza_id): 
     pizza = Pizza.query.get(pizza_id)
@@ -254,7 +246,7 @@ def get_pizza(pizza_id):
         
     pizza_info = Pizza.query.filter_by(id=pizza_id).first().serialize()
     response_body = {
-        "message" : "Nice pizza!",
+        "msg" : "Nice pizza!",
         "data": pizza_info
     }
 
@@ -284,14 +276,13 @@ def get_orders():
     jtw_data = get_jwt()
     user_id = jtw_data["user_id"]
     response_body = {
-        "message" : "ok!",
+        "msg" : "ok!",
         "data": orders_serialized,
         "user_id": user_id
     }
     if (get_orders == []):
         return jsonify({"msg": "Not orders yet"}), 404
     return jsonify(response_body), 200
-
 
 @api.route('/orders/order/<int:order_id>', methods = ['GET'])
 @jwt_required()
@@ -302,7 +293,7 @@ def get_order(order_id):
         
     order_info = Order.query.filter_by(id=order_id).first().serialize()    
     response_body = {
-        "message" : "ok!",
+        "msg" : "ok!",
         "data": order_info
     }
 
@@ -314,7 +305,6 @@ def new_order():
     request_body = request.get_json()
     jtw_data = get_jwt()
     user_id = jtw_data["user_id"]
-    print(user_id)
     if Order.query.filter_by(user_id=user_id,  status="pending").first():
         return jsonify({"msg": "Duplicated order"}), 409
     order = Order()
@@ -372,7 +362,7 @@ def new_order_item():
     db.session.add(order_item)
     db.session.commit()  
     response_body = {
-        "message" : "Order item created!",
+        "msg" : "Order item created!",
         "data": Pizza.query.filter_by(id=pizza_id).first().serialize()
     }
     return jsonify(response_body), 200
@@ -406,7 +396,7 @@ def get_order_items(in_order_id):
     result.sort(key=lambda x: x['id'])
     
     response_body = {
-        "message": "ok!",
+        "msg": "ok!",
         "data": result
     }
 
@@ -431,7 +421,7 @@ def get_ingredients():
     ingredients = Ingredient.query.all()
     ingredients_serialized = list(map(lambda item:item.serialize(), ingredients))
     response_body = {
-        "message" : "ok!",
+        "msg" : "ok!",
         "data": ingredients_serialized
     }
     if (get_ingredients == []):
@@ -466,13 +456,12 @@ def get_pizzaingredient():
     pizzaingredient = PizzaIngredient.query.all()
     pizzaingredient_serialized = list(map(lambda item:item.serialize(), pizzaingredient))
     response_body = {
-        "message" : "ok!",
+        "msg" : "ok!",
         "data": pizzaingredient_serialized
     }
     if (get_ingredients == []):
         return jsonify({"msg": "Any pizzaingredient"}), 404
     return jsonify(response_body), 200
-
 
 @api.route('/pizzaingredient/create', methods = ['POST'])
 @jwt_required()
