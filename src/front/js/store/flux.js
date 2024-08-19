@@ -58,6 +58,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						localStorage.setItem("token", data.access_token)
 						localStorage.setItem("user_name", data.user.firstname);
 						localStorage.setItem("user_role", data.user.role);
+						localStorage.setItem("user_id", data.users.id);
 						return true
 					} else {
 						return data.msg
@@ -86,6 +87,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						localStorage.setItem("token", data.access_token);
 						localStorage.setItem("user_name", data.users.firstname);
 						localStorage.setItem("user_role", data.users.role);
+						localStorage.setItem("user_id", data.users.id);
 						return true
 					} else {
 						const errorMessage = document.getElementById('error-message');
@@ -103,6 +105,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				localStorage.removeItem("token");
 				localStorage.removeItem("user_name");
 				localStorage.removeItem("user_role");
+				localStorage.removeItem("user_id");
 				setStore({order: ""})
 				setStore({user: ""})
 			},
@@ -160,7 +163,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			getUser: async(token)=> {
 				try {
-					let response = await fetch(`${process.env.BACKEND_URL}api/users/user/${getStore().order.user_id}`, {
+					let response = await fetch(`${process.env.BACKEND_URL}api/users/user/${localStorage.getItem("user_id")}`, {
 						method: "GET",
 						headers: {
 							'Authorization': 'Bearer ' + token 

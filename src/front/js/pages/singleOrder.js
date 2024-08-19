@@ -14,6 +14,11 @@ export const SingleOrder = () => {
         }
         fetchData()
 	}, []);
+
+    const handleBack = () => {
+        navigate("/orders/user")
+        store.singleOrder = []
+    }
    
     return (
         <div className="container mt-5">
@@ -37,6 +42,7 @@ export const SingleOrder = () => {
                     </div>
                 ))}
             </div>
+            <button className='btn btn-beige' onClick={handleBack}>Back</button>
         </div>
     );
 };

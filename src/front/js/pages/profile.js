@@ -7,21 +7,21 @@ export const Profile = () => {
     const navigate = useNavigate();
     useEffect(() => {
         async function fetchData() {
-            await actions.getOrder(localStorage.getItem("token"));
             await actions.getUser(localStorage.getItem("token"));
-            await actions.loadCart(localStorage.getItem("token"));
         }
         fetchData()
-
 	}, []);
-    console.log(store.user)
+    
     return (
-        <div className="card w-25">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">{store.user.firstname}</li>
-                <li class="list-group-item">{store.user.lastname}</li>
-                <li class="list-group-item">{store.user.email}</li>
-            </ul>
+        <div>
+            <div className="card w-25">
+                <ul className="list-group list-group-flush">
+                    <li className="list-group-item">{store.user.firstname}</li>
+                    <li className="list-group-item">{store.user.lastname}</li>
+                    <li className="list-group-item">{store.user.email}</li>
+                </ul>
+            </div>
+            <button className="btn btn-beige" onClick={()=> {navigate("/home")}}>Home</button>
         </div>
     );
     

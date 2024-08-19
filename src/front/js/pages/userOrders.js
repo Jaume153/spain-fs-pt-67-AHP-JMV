@@ -14,7 +14,6 @@ export const UserOrders = () => {
 	}, []);
 
     const seeSingleOrder = async(order_id) => {
-        await actions.getSingleOrder(localStorage.getItem("token"), order_id)
         navigate(`/orders/order/${order_id}`)
     }
     return (
