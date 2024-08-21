@@ -1,9 +1,9 @@
-import React, {useContext, useState} from "react"
+import React, {useContext, useState,useEffect} from "react"
 import { Context } from "../store/appContext"
 import { useNavigate } from "react-router-dom"
 
 export const NewPizza  = () => {
-    
+
     const navigate = useNavigate()
     const {actions} = useContext(Context)
     const [photo, setPhoto] = useState("")
@@ -11,6 +11,14 @@ export const NewPizza  = () => {
     const [description, setDescription] = useState("")
     const [price, setPrice] = useState("")
     const [type, setType] = useState("")
+
+    useEffect(() => {
+        let user_type = localStorage.getItem("user_role")
+
+        if (user_type === "Customer"){
+            navigate("/home")
+        }
+    }, []);
 
    
     const uploadPizza = async(e) => {
