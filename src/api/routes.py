@@ -111,7 +111,7 @@ def requestResetPassword():
         <body>
             <p>Hi,<br>
             Haz click aqui para recuperar tu contraseña
-            <a style="color: red" href="https://congenial-giggle-pjrvq5vg7p436755-3000.app.github.dev/users/resetPassword?token=""" + token +"""" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Recuperarla!</a>
+            <a style="color: red" href="https://sample-service-name-7osf.onrender.com/admin/users/resetPassword?token=""" + token +"""" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Recuperarla!</a>
                 </td>
             </tr>
         </table>
