@@ -141,7 +141,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 				try{
-					let response = await fetch (`${process.env.BACKEND_URL}api/users/resetPassword`, {
+					let response = await fetch (`${process.env.BACKEND_URL}users/resetPassword`, {
 						method: "PATCH",
 						headers: {
 							"Content-Type" : "application/json",
